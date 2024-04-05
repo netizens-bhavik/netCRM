@@ -1,0 +1,9 @@
+models:
+    Client: { name: string, email: 'string nullable default:NULL', avtar: 'string nullable default:NULL', country_id: 'biginteger unsigned', state_id: 'biginteger unsigned', city_id: 'biginteger unsigned', zipcode: string, phone_no: string, company_name: string, company_website: string, company_address: string, company_logo: string, tax: string, gst_vat: string, office_mobile: string, address: string, added_by: 'biginteger unsigned', note: 'string nullable default:NULL' }
+    Department: { name: string }
+    Designation: { name: string }
+    Project: { client_id: 'biginteger unsigned', manage_by: 'biginteger unsigned', name: string, start_date: date, deadline: date, summary: string, members: longtext, currency: string }
+    Setting: { key: string, value: string }
+    Task: { project_id: 'biginteger unsigned', start_date: date, due_date: date, description: string, priority: string, status: string, voice_memo: string }
+    TaskHasMembers: { task_id: 'biginteger unsigned', user_id: 'biginteger unsigned' }
+    User: { name: string, avtar: string, email: string, password: string, phone_no: string, designation_id: 'string nullable default:NULL', department_id: 'string nullable default:NULL', date_of_birth: date, gender: string, date_of_join: date, address: string, about: 'string nullable default:NULL', remember_token: 'string:100 nullable default:NULL' }

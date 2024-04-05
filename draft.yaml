@@ -1,0 +1,7 @@
+models:
+  # ...
+
+controllers:
+    Project:
+        create:
+            validate : client_id,manage_by,name,start_date,deadline,summary,members,currency
