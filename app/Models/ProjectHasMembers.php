@@ -10,6 +10,6 @@ class ProjectHasMembers extends Model
 {
     use HasFactory,SoftDeletes;
     protected $fillable = [
-        'project_id', 'user_id',
+        'id','project_id', 'user_id',
     ];
 }

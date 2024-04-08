@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('project_has_members', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('project_id');
+            $table->uuid('id')->primary();
+            $table->uuid('project_id');
             $table->foreign('project_id')->references('id')->on('projects');
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();

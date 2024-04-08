@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->string('avtar')->nullable();
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('gst_vat');
             $table->string('office_mobile');
             $table->string('address');
-            $table->unsignedBigInteger('added_by');
+            $table->uuid('added_by');
             $table->foreign('added_by')->references('id')->on('users');
             $table->string('note')->nullable();
             $table->timestamps();

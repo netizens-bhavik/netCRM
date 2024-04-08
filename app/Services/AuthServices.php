@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AuthServices
 {
@@ -23,6 +24,7 @@ class AuthServices
                 $request->avtar->move(public_path($destinationPath), $myimage);
             }
             $user = User::create([
+                'id' => Str::uuid(),
                 'name' => $request->name,
                 'avtar' => url($myimage),
                 'email' => $request->email,

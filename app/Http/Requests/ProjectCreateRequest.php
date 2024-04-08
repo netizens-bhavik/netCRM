@@ -27,6 +27,7 @@ class ProjectCreateRequest extends FormRequest
             'deadline' => ['required','date'],
             'summary' => ['required'],
             'currency' => ['required'],
+            'project_members' => ['required','array']
         ];
     }
 }

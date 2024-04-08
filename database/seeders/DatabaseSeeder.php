@@ -10,6 +10,7 @@ use App\Models\Designation;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,8 +19,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Designation::create(['name' => 'admin']);
-        Department::create(['name' => 'admin']);
+        Designation::create(['id'=> Str::uuid(),'name' => 'admin']);
+        Department::create(['id'=> Str::uuid(),'name' => 'admin']);
         $this->call([
             CountriesTableSeeder::class,
             StatesTableSeeder::class,
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'member']);
 
         User::create([
+            'id'=> Str::uuid(),
             'name' => 'Admin',
             'avtar' => url('user_avtar/admin.jpg'),
             'email' => 'netAdmin@test.com',

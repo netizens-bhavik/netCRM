@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('project_id');
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->uuid('project_id');
             $table->foreign('project_id')->references('id')->on('projects');
             $table->date('start_date');
             $table->date('due_date');
@@ -21,6 +22,8 @@ return new class extends Migration
             $table->string('priority');
             $table->string('status');
             $table->string('voice_memo');
+            $table->uuid('manage_by');
+            $table->foreign('manage_by')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });

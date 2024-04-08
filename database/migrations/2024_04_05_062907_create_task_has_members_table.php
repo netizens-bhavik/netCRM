@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('task_has_members', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('task_id');
+            $table->uuid('id')->primary();
+            $table->uuid('task_id');
             $table->foreign('task_id')->references('id')->on('tasks');
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
