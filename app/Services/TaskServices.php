@@ -123,9 +123,29 @@ class TaskServices
                 $projectMembers = TaskHasMembers::where('task_id', $taskId)->delete();
                 $task->delete();
                 return response()->json(['status' => 'success', 'message' => 'Task Deleted Successfully.']);
-            }else{
+            } else {
                 throw new Exception('Task Not Found');
             }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function getAllStatus()
+    {
+        try {
+            $status = Task::status;
+            return response()->json(['status' => 'success', 'data' => $status]);
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function getAllPriorities()
+    {
+        try {
+            $priorities = Task::priority;
+            return response()->json(['status' => 'success', 'data' => $priorities]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);

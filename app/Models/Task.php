@@ -22,4 +22,10 @@ class Task extends Model
         'status',
         'voice_memo','manage_by',
     ];
+    public const priority = [
+        'High', 'Low' , 'Medium' , 'Hold'
+    ];
+    public const status = [
+        'Active','Inactive','Hold','Inprocess','Cancle'
+    ];
 }

@@ -41,4 +41,20 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
+    function getTaskStatus(){
+        try {
+            $response = TaskServices::getAllStatus();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function getAllPriorities(){
+        try {
+            $response = TaskServices::getAllPriorities();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
 }
