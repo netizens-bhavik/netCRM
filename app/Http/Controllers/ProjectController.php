@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Services\ProjectServices;
+use App\Http\Requests\FindProjectRequest;
 use App\Http\Requests\ProjectCreateRequest;
 use App\Http\Requests\ProjectUpdateRequest;
-use App\Services\ProjectServices;
+
 
 class ProjectController extends Controller
 {
@@ -36,6 +39,22 @@ class ProjectController extends Controller
     public function destroy($projectId){
         try {
             $response = ProjectServices::deleteProject($projectId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function projectHasTask($projectId){
+        try {
+            $response = ProjectServices::projectHasTasks($projectId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function findProject($projectId,FindProjectRequest $request){
+        try {
+            $response = ProjectServices::projectFind($projectId,$request);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
