@@ -41,4 +41,12 @@ class ClientController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
+    function clientHasProject($clientId){
+        try {
+            $response = ClientServices::clienHasProjects($clientId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
 }
