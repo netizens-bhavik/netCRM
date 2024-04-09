@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Task;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TaskCreateRequest extends FormRequest
@@ -27,8 +28,8 @@ class TaskCreateRequest extends FormRequest
             'start_date'  => ['required'],
             'due_date'  => ['required'],
             'description'  => ['required'],
-            'priority'  => ['required'],
-            'status'  => ['required'],
+            'priority'  => ['required','in:'.implode(',',Task::priority)],
+            'status'  => ['required','in:'.implode(',',Task::status)],
             'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav'],
             'task_members' => ['required','array']
         ];

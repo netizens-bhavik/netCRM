@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectHasMembersController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskHasMembersController;
 use App\Http\Controllers\UserController;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
@@ -33,4 +35,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-task-status',[TaskController::class,'getTaskStatus']);
     Route::get('get-all-priorities',[TaskController::class,'getAllPriorities']);
 
+    Route::get('client-has-project/{clientId}',[ClientController::class,'clientHasProject']);
+    Route::get('project-has-task/{projectId}',[ProjectController::class,'projectHasTask']);
+
+    Route::get('Project-has-members/{projectId}',[ProjectHasMembersController::class,'ProjectMembers']);
+    Route::get('task-has-members/{taskId}',[TaskHasMembersController::class,'taskMembers']);
+
+    // find task with project id and set parameter status and priority
+    Route::get('project-find/{projectId}',[ProjectController::class,'findProject']);
 });
