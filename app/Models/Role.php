@@ -12,4 +12,11 @@ class Role extends SpatieRole
     use HasFactory;
     use HasUuids;
     protected $primaryKey = 'id';
+    public const roles = [
+        'super-admin'=>'Super Admin',
+        'admin' => 'Admin',
+        'member' => 'Member',
+        'accountant' => 'Accountant',
+        'business-person' => 'Businessperson'
+    ];
 }

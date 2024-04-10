@@ -22,14 +22,14 @@ class ProjectUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-                'client_id' => ['required'],
-                'manage_by' => ['required'],
-                'name' => ['required'],
-                'start_date' => ['required','date'],
-                'deadline' => ['required','date'],
-                'summary' => ['required'],
-                'currency' => ['required'],
-                'project_members' => ['required','array']
+            'client_id' => ['required'],
+            'manage_by' => ['required'],
+            'name' => ['required'],
+            'start_date' => ['required', 'date'],
+            'deadline' => ['required', 'date'],
+            'summary' => ['required'],
+            // 'currency' => ['required'],
+            'project_members' => ['required', 'array']
         ];
     }
 }

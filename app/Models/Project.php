@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model
 {
@@ -14,10 +16,10 @@ class Project extends Model
 
     protected $fillable = [
         'id',
+        'client_id',
         'manage_by',
-        'client_id', 'name',
+        'name',
         'start_date',
-        'manage_by',
         'deadline',
         'summary',
         'members',
@@ -31,4 +33,31 @@ class Project extends Model
     protected $casts = [
         'id' => 'string'
     ];
+    /**
+     * Get the client that owns the Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class, 'client_id')->select(['id','name']);
+    }
+    /**
+     * Get the managedBy that owns the Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function manageBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'manage_by')->select(['id','name']);
+    }
+    /**
+     * Get all of the members for the Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function members(): HasMany
+    {
+        return $this->hasMany(ProjectHasMembers::class);
+    }
 }

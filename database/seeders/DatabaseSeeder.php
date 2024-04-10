@@ -30,13 +30,16 @@ class DatabaseSeeder extends Seeder
             CitiesTableChunkFourSeeder::class,
             CitiesTableChunkFiveSeeder::class,
         ]);
-        $roleAdmin = Role::create(['name' => 'admin']);
-        Role::create(['name' => 'client']);
-        Role::create(['name' => 'member']);
+        foreach (Role::roles as $key => $role) {
+            Role::create(['name' => $role]);
+        }
+        // $roleAdmin = Role::create(['name' => 'admin']);
+        // Role::create(['name' => 'client']);
+        // Role::create(['name' => 'member']);
 
         $admin = User::create([
             'name' => 'Admin',
-            'avtar' => url('user_avtar/admin.jpg'),
+            'avtar' => url('admin.jpg'),
             'email' => 'netAdmin@test.com',
             'password' => Hash::make('password'),
             'phone_no' => '7046260656',
@@ -49,6 +52,6 @@ class DatabaseSeeder extends Seeder
             'about' => null
         ]);
 
-        $admin->assignRole('admin');
+        $admin->assignRole('Super Admin');
     }
 }

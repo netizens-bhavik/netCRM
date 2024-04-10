@@ -27,7 +27,7 @@ trait ApiResponses
      * @param  int  $statusCode
      * @return JsonResponse
      */
-    public function errorResponse(mixed $data, string $message = '', int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
+    public static function errorResponse(mixed $data, string $message = '', int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
     {
         if (!$message) {
             $message = Response::$statusTexts[$statusCode];

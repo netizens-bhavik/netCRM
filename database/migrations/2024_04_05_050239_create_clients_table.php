@@ -25,13 +25,13 @@ return new class extends Migration
             $table->string('zipcode');
             $table->string('phone_no');
             $table->string('company_name');
-            $table->string('company_website');
+            $table->string('company_website')->nullable();
             $table->string('company_address');
             $table->string('company_logo');
-            $table->string('tax');
-            $table->string('gst_vat');
+            $table->string('tax')->nullable();
+            $table->string('gst_vat')->nullable();
             $table->string('office_mobile');
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->uuid('added_by');
             $table->foreign('added_by')->references('id')->on('users');
             $table->string('note')->nullable();
