@@ -7,8 +7,8 @@ use App\Models\User;
 use App\Models\Department;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Designation;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -28,14 +28,13 @@ class DatabaseSeeder extends Seeder
             CitiesTableChunkTwoSeeder::class,
             CitiesTableChunkThreeSeeder::class,
             CitiesTableChunkFourSeeder::class,
-            CitiesTableChunkFiveSeeder::class
+            CitiesTableChunkFiveSeeder::class,
         ]);
-        Role::create(['name' => 'admin']);
+        $roleAdmin = Role::create(['name' => 'admin']);
         Role::create(['name' => 'client']);
         Role::create(['name' => 'member']);
 
-        User::create([
-            'id'=> Str::uuid(),
+        $admin = User::create([
             'name' => 'Admin',
             'avtar' => url('user_avtar/admin.jpg'),
             'email' => 'netAdmin@test.com',
@@ -49,5 +48,7 @@ class DatabaseSeeder extends Seeder
             'address' => 'surat',
             'about' => null
         ]);
+
+        $admin->assignRole('admin');
     }
 }

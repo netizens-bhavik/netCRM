@@ -33,4 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-task-status',[TaskController::class,'getTaskStatus']);
     Route::get('get-all-priorities',[TaskController::class,'getAllPriorities']);
 
+    Route::get('my-project',[ProjectController::class,'myProject']);
+    Route::get('my-task',[TaskController::class,'myTask']);
+
+    //statastics
 });

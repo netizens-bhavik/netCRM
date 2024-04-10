@@ -35,6 +35,7 @@ class AuthServices
                 'date_of_join' => $request->date_of_join,
                 'address' => $request->address
             ]);
+            $user->assignRole('member');
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',

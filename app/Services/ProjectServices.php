@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Project;
-use App\Models\ProjectHasMembers;
 use Exception;
+use App\Models\Task;
+use App\Models\Project;
 use Illuminate\Support\Str;
+use App\Models\ProjectHasMembers;
+use App\Models\TaskHasMembers;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectServices
 {
@@ -96,16 +99,48 @@ class ProjectServices
             return response()->json($res);
         }
     }
-    public static function deleteProject($projectId){
+    public static function deleteProject($projectId)
+    {
         try {
             $project = Project::find($projectId);
             if (!empty($project)) {
                 $projectMembers = ProjectHasMembers::where('project_id', $projectId)->delete();
                 $project->delete();
                 return response()->json(['status' => 'success', 'message' => 'Project Deleted Successfully.']);
-            }else{
+            } else {
                 throw new Exception('Project Not Found');
             }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function myProject()
+    {
+        try {
+            $userid = Auth::id();$data = [];$_projects = [];
+            $projects = Project::where('manage_by',$userid)->get(['name','start_date','deadline','summary','currency']);
+            foreach ($projects as $key => $project) {
+                $_projects[] = [
+                    'name' => $project->name,
+                    'start_date' => $project->start_date,
+                    'deadline' => $project->deadline,
+                    'summary' => $project->summary,
+                    'currency' => $project->currency
+                ];
+            }
+            $memberOfProjects = ProjectHasMembers::where('user_id',$userid)->get(['project_id']);
+            foreach ($memberOfProjects as $key => $memberOfProject) {
+                $p = Project::find($memberOfProject->project_id)->first(['name','start_date','deadline','summary','currency']);
+                $_projects[] = [
+                    'name' => $p->name,
+                    'start_date' => $p->start_date,
+                    'deadline' => $p->deadline,
+                    'summary' => $p->summary,
+                    'currency' => $p->currency
+                ];
+            }
+            return response()->json(['status' => 'success', 'data' => $_projects]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
