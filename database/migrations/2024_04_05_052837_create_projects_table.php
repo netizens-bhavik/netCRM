@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('deadline');
             $table->string('summary');
-            $table->string('currency');
+            $table->string('currency')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

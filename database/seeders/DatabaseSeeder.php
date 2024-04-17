@@ -7,8 +7,8 @@ use App\Models\User;
 use App\Models\Department;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Designation;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -28,16 +28,18 @@ class DatabaseSeeder extends Seeder
             CitiesTableChunkTwoSeeder::class,
             CitiesTableChunkThreeSeeder::class,
             CitiesTableChunkFourSeeder::class,
-            CitiesTableChunkFiveSeeder::class
+            CitiesTableChunkFiveSeeder::class,
         ]);
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'client']);
-        Role::create(['name' => 'member']);
+        foreach (Role::roles as $key => $role) {
+            Role::create(['name' => $role]);
+        }
+        // $roleAdmin = Role::create(['name' => 'admin']);
+        // Role::create(['name' => 'client']);
+        // Role::create(['name' => 'member']);
 
-        User::create([
-            'id'=> Str::uuid(),
+        $admin = User::create([
             'name' => 'Admin',
-            'avtar' => url('user_avtar/admin.jpg'),
+            'avtar' => url('admin.jpg'),
             'email' => 'netAdmin@test.com',
             'password' => Hash::make('password'),
             'phone_no' => '7046260656',
@@ -49,5 +51,7 @@ class DatabaseSeeder extends Seeder
             'address' => 'surat',
             'about' => null
         ]);
+
+        $admin->assignRole('Super Admin');
     }
 }

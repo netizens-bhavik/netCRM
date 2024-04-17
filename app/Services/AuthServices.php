@@ -19,22 +19,23 @@ class AuthServices
     public static function registerUser($request){
         try {
             if ($request->avtar) {
-                $destinationPath = 'user_avtar';
+                $destinationPath = 'avatars';
                 $myimage = time().$request->avtar->getClientOriginalName();
                 $request->avtar->move(public_path($destinationPath), $myimage);
             }
             $user = User::create([
                 'id' => Str::uuid(),
                 'name' => $request->name,
-                'avtar' => url($myimage),
+                'avtar' => $myimage,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'phone_no' => $request->phone_no,
                 'date_of_birth' => $request->date_of_birth,
                 'gender' => $request->gender,
                 'date_of_join' => $request->date_of_join,
-                'address' => $request->address
+                'address' => $request->address,
             ]);
+            $user->assignRole($request->role);
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
@@ -57,11 +58,12 @@ class AuthServices
             }
 
             $user = User::where('email', $request->email)->first();
-
+            $roles = $user->getRoleNames();
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken("API TOKEN")->plainTextToken,
+                'role' => $roles
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

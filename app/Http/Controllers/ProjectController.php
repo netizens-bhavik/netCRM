@@ -20,9 +20,9 @@ class ProjectController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    public function edit($projectId){
+    public function edit(Request $request,$projectId){
         try {
-            $response = ProjectServices::editProject($projectId);
+            $response = ProjectServices::editProject($request,$projectId);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
@@ -36,9 +36,58 @@ class ProjectController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    public function destroy($projectId){
+    public function destroy(Request $request,$projectId){
         try {
-            $response = ProjectServices::deleteProject($projectId);
+            $response = ProjectServices::deleteProject($request,$projectId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function myProject(){
+        try {
+            $response = ProjectServices::myProject();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function allProjectList(){
+        try {
+            $response = ProjectServices::allProjectList();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function index(){
+        try {
+            $response = ProjectServices::index();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+
+    function projectList(){
+        try {
+            $response = ProjectServices::projectList();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function create(){
+        try {
+            $response = ProjectServices::create();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function allProjects(){
+        try {
+            $response = ProjectServices::allProjects();
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);

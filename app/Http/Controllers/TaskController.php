@@ -17,7 +17,8 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function edit($taskId){
+    function edit($taskId)
+    {
         try {
             $response = TaskServices::editTask($taskId);
             return $response;
@@ -25,15 +26,17 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function update(TaskUpdateRequest $request,$taskId){
+    function update(TaskUpdateRequest $request, $taskId)
+    {
         try {
-            $response = TaskServices::updateTask($request,$taskId);
+            $response = TaskServices::updateTask($request, $taskId);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function destroy($taskId){
+    function destroy($taskId)
+    {
         try {
             $response = TaskServices::deleteTask($taskId);
             return $response;
@@ -41,7 +44,8 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function getTaskStatus(){
+    function getTaskStatus()
+    {
         try {
             $response = TaskServices::getAllStatus();
             return $response;
@@ -49,9 +53,54 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function getAllPriorities(){
+    function getAllPriorities()
+    {
         try {
             $response = TaskServices::getAllPriorities();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function myTask()
+    {
+        try {
+            $response = TaskServices::myTask();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function allTaskList()
+    {
+        try {
+            $response = TaskServices::allTaskList();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function index()
+    {
+        try {
+            $response = TaskServices::index();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function taskList()
+    {
+        try {
+            $response = TaskServices::taskList();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function create(){
+        try {
+            $response = TaskServices::create();
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);

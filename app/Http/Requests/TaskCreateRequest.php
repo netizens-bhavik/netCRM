@@ -30,7 +30,8 @@ class TaskCreateRequest extends FormRequest
             'description'  => ['required'],
             'priority'  => ['required','in:'.implode(',',Task::priority)],
             'status'  => ['required','in:'.implode(',',Task::status)],
-            'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav'],
+            // 'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav,audio/wav'],
+            'voice_memo'  => ['required', 'extensions:wav,audio/wav'],
             'task_members' => ['required','array']
         ];
     }

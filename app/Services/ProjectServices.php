@@ -2,11 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\Project;
-use App\Models\ProjectHasMembers;
-use App\Models\Task;
 use Exception;
+use App\Models\Task;
+use App\Models\Project;
 use Illuminate\Support\Str;
+use App\Models\ProjectHasMembers;
+use DataTables;
+use App\Models\User;
+use App\Models\Client;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectServices
 {
@@ -34,36 +38,54 @@ class ProjectServices
             foreach ($project_members as $key => $member) {
                 ProjectHasMembers::create(['id' => Str::uuid(), 'project_id' => $project->id, 'user_id' => $member]);
             }
-            return response()->json(['status' => 'success', 'message' => 'Project Create Successfully.']);
+            if ($request->expectsJson()) {
+                //For API
+                return response()->json(['status' => 'success', 'message' => 'Project Create Successfully.']);
+            } else {
+                //For WEB
+                toastr()->success('Data has been saved successfully!');
+                return redirect('project');
+            }
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
         }
     }
-    public static function editProject($projectId)
+    public static function editProject($request, $projectId)
     {
         try {
-            $projectMembers = ProjectHasMembers::where('project_id', $projectId)->get('user_id');
-            if (!empty($projectMembers)) {
-                $member = [];
-                foreach ($projectMembers as $key => $value) {
-                    $member[] = $value->user_id;
+            $project = Project::find($projectId);
+            if ($project) {
+                $projectMembers = ProjectHasMembers::where('project_id', $projectId)->get('user_id');
+                if (!empty($projectMembers)) {
+                    $member = [];
+                    foreach ($projectMembers as $key => $value) {
+                        $member[] = $value->user_id;
+                    }
+                } else {
+                    $member = null;
+                }
+
+                $data = [
+                    'client_id' => $project->client_id,
+                    'manage_by' => $project->manage_by,
+                    'name' => $project->name,
+                    'start_date' => $project->start_date,
+                    'deadline' => $project->deadline,
+                    'summary' => $project->summary,
+                    'currency' => $project->currency,
+                    'projectMembers' => $member
+                ];
+                if ($request->expectsJson()) {
+                    return response()->json(['status' => 'success', 'data' => $data]);
+                } else {
+                    $clients = Client::latest('created_at')->get(['id', 'name']);
+                    $users = User::withoutRole('admin')->latest('created_at')->get();
+                    return view('project.create', compact('clients', 'users', 'data'));
                 }
             } else {
-                $member = null;
+                throw new Exception('Project Not Found');
             }
-            $project = Project::find($projectId);
-            $data = [
-                'client_id' => $project->client_id,
-                'manage_by' => $project->manage_by,
-                'name' => $project->name,
-                'start_date' => $project->start_date,
-                'deadline' => $project->deadline,
-                'summary' => $project->summary,
-                'currency' => $project->currency,
-                'projectMembers' => $member
-            ];
-            return response()->json(['status' => 'success', 'data' => $data]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
@@ -88,7 +110,14 @@ class ProjectServices
                 foreach ($project_members as $key => $member) {
                     ProjectHasMembers::create(['id' => Str::uuid(), 'project_id' => $project->id, 'user_id' => $member]);
                 }
-                return response()->json(['status' => 'success', 'message' => 'Project Update Successfully.']);
+                if ($request->expectsJson()) {
+                    //For API
+                    return response()->json(['status' => 'success', 'message' => 'Project Update Successfully.']);
+                } else {
+                    //For WEB
+                    toastr()->success('Data has been Upadted successfully!');
+                    return redirect('project');
+                }
             } else {
                 throw new Exception('Project Not Found');
             }
@@ -97,14 +126,19 @@ class ProjectServices
             return response()->json($res);
         }
     }
-    public static function deleteProject($projectId)
+    public static function deleteProject($request, $projectId)
     {
         try {
             $project = Project::find($projectId);
             if (!empty($project)) {
                 $projectMembers = ProjectHasMembers::where('project_id', $projectId)->delete();
                 $project->delete();
-                return response()->json(['status' => 'success', 'message' => 'Project Deleted Successfully.']);
+                if ($request->expectsJson()) {
+                    return response()->json(['status' => 'success', 'message' => 'Project Deleted Successfully.']);
+                } else {
+                    toastr()->success('Data has been Deleted successfully!');
+                    return redirect('project');
+                }
             } else {
                 throw new Exception('Project Not Found');
             }
@@ -189,6 +223,111 @@ class ProjectServices
             } else {
                 throw new Exception('Project Not Found');
             }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function myProject()
+    {
+        try {
+            $userid = Auth::id();
+            $user = Auth::user();
+
+            $data = [];
+            $_projects = [];
+            $projects = Project::where('manage_by', $userid)->get(['name', 'start_date', 'deadline', 'summary', 'currency']);
+            foreach ($projects as $key => $project) {
+
+                $_projects[] = [
+                    'name' => $project->name,
+                    'start_date' => $project->start_date,
+                    'deadline' => $project->deadline,
+                    'summary' => $project->summary,
+                    'currency' => $project->currency
+                ];
+            }
+            $memberOfProjects = ProjectHasMembers::where('user_id', $userid)->get(['project_id']);
+            foreach ($memberOfProjects as $key => $memberOfProject) {
+                $p = Project::find($memberOfProject->project_id)->first(['name', 'start_date', 'deadline', 'summary', 'currency']);
+                $_projects[] = [
+                    'name' => $p->name,
+                    'start_date' => $p->start_date,
+                    'deadline' => $p->deadline,
+                    'summary' => $p->summary,
+                    'currency' => $p->currency
+                ];
+            }
+
+            // Retrieve projects where the user is the manager
+            $managerProjects = $user->projects()->whereNotNull('manage_by')->get();
+
+            // Retrieve projects where the user is a member
+            $memberProjects = $user->projects()->whereNull('manage_by')->get();
+
+            // Merge manager and member projects
+            $allProjects = $managerProjects->merge($memberProjects);
+            return($allProjects);
+
+            return response()->json(['status' => 'success', 'data' => $_projects]);
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function allProjectList()
+    {
+        try {
+            $projects = Project::with('client', 'manageBy', 'members.user')->paginate(10);
+            return response()->json(['status' => 'success', 'data' => $projects], 200);
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function index()
+    {
+        try {
+            return view('project.index');
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
+    public static function projectList()
+    {
+        try {
+            $data = [];
+            $i = 1;
+            $projects = Project::latest('created_at')->get(['id', 'name', 'start_date', 'deadline', 'summary']);
+            foreach ($projects as $key => $project) {
+                $data[] = [
+                    '#' => $i++,
+                    'name' => $project->name,
+                    'startDate' => $project->start_date,
+                    'deadLine' => $project->deadline,
+                    'action' => "<a href='" . url('project/' . $project->id . '/edit') . "' class='me-3'><i class='ti ti-edit'></i></a><a href='" . url('project/' . $project->id . '/delete') . "'><i class='ti ti-trash'></i></a>"
+                ];
+            }
+            return Datatables::of($data)->rawColumns(['name', 'action'])->make(true);
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
+    public static function create()
+    {
+        try {
+            $clients = Client::latest('created_at')->get(['id', 'name']);
+            $users = User::withoutRole('admin')->latest('created_at')->get();
+            return view('project.create', compact('clients', 'users'));
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
+    public static function allProjects()
+    {
+        try {
+            $projects = Project::all();
+            return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);

@@ -24,7 +24,7 @@ class ClientRequest extends FormRequest
         return [
             'name' => ['required'],
             'email' => ['required','email'],
-            'avtar' => ['required','mimes:png,jpg'],
+            'avtar' => ['extensions:png,jpg,jpeg'],
             'country_id' => ['required','integer'],
             'state_id' => ['required','integer'],
             'city_id' => ['required','integer'],
@@ -33,14 +33,14 @@ class ClientRequest extends FormRequest
             // 'phone_no' => ['required','regex:/(01)[0-9]{9}/'],
             'phone_no' => ['required','integer','digits:10'],
             'company_name' => ['required'],
-            'company_website' => ['required','url'],
+            'company_website' => ['url'],
             'company_address' => ['required'],
-            'company_logo' => ['required','mimes:png,jpg'],
-            'tax' => ['required'],
-            'gst_vat' => ['required'],
+            'company_logo' => ['required','extensions:png,jpg,jpeg'],
+            // 'tax' => ['required'],
+            // 'gst_vat' => ['required'],
             'office_mobile' => ['required','integer','digits:10'],
-            'address' => ['required'],
-            'note' => ['required']
+            // 'address' => ['required'],
+            // 'note' => ['required']
         ];
     }
 }

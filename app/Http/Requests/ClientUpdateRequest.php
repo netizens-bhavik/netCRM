@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Client;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClientUpdateRequest extends FormRequest
@@ -22,14 +22,13 @@ class ClientUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(Request $request): array
     {
-        $clientId = $this->route('client') ? $this->route('client')->id : null;
         return [
             'name' => ['required'],
-            'email' => ['required', 'email', 'unique:clients,email,' . $clientId],
+            'email' => ['required', 'email', 'unique:clients,email,'.$request->clientId],
             // 'avtar' => ['required','mimes:png,jpg'],
-            'avtar' => ['mimes:png,jpg'],
+            // 'avtar' => ['nullable','mimes:png,jpg'],
             'country_id' => ['required', 'integer'],
             'state_id' => ['required', 'integer'],
             'city_id' => ['required', 'integer'],
@@ -38,15 +37,15 @@ class ClientUpdateRequest extends FormRequest
             // 'phone_no' => ['required','regex:/(01)[0-9]{9}/'],
             'phone_no' => ['required', 'integer', 'digits:10'],
             'company_name' => ['required'],
-            'company_website' => ['required', 'url'],
+            'company_website' => ['url'],
             'company_address' => ['required'],
             // 'company_logo' => ['required','mimes:png,jpg'],
-            'company_logo' => ['mimes:png,jpg'],
-            'tax' => ['required'],
-            'gst_vat' => ['required'],
+            // 'company_logo' => ['nullable','mimes:png,jpg'],
+            // 'tax' => ['required'],
+            // 'gst_vat' => ['required'],
             'office_mobile' => ['required', 'integer', 'digits:10'],
-            'address' => ['required'],
-            'note' => ['required']
+            // 'address' => ['required'],
+            // 'note' => ['required']
         ];
     }
 }

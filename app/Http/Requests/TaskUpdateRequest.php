@@ -29,7 +29,7 @@ class TaskUpdateRequest extends FormRequest
             'description'  => ['required'],
             'priority'  => ['required'],
             'status'  => ['required'],
-            'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav'],
+            // 'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav'],
             'task_members' => ['required','array']
         ];
     }
