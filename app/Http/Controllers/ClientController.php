@@ -53,6 +53,7 @@ return view('clients.index');
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
+
     function clientList(Request $request){
         try {
             if ($request->ajax()) {
@@ -96,4 +97,5 @@ return view('clients.index');
             return $th->getMessage();
         }
     }
+
 }
