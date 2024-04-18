@@ -37,7 +37,7 @@ class Task extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function members(): HasMany
+    public function task_has_members():HasMany
     {
         return $this->hasMany(TaskHasMembers::class);
     }
