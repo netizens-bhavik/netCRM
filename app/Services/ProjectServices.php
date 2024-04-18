@@ -194,45 +194,47 @@ class ProjectServices
     public static function myProject()
     {
         try {
-            $userid = Auth::id();
             $user = Auth::user();
+            $projects = Project::with('members')
+            ->whereHas('members', function ($query) use ($user){
+                $query->where('user_id',$user->id);
+            })
+            ->Orwhere('manage_by',$user->id)->get()->toArray();
+            // $data = [];
+            // $_projects = [];
+            // foreach ($projects as $key => $project) {
 
-            $data = [];
-            $_projects = [];
-            $projects = Project::where('manage_by', $userid)->get(['name', 'start_date', 'deadline', 'summary', 'currency']);
-            foreach ($projects as $key => $project) {
+            //     $_projects[] = [
+            //         'name' => $project->name,
+            //         'start_date' => $project->start_date,
+            //         'deadline' => $project->deadline,
+            //         'summary' => $project->summary,
+            //         'currency' => $project->currency
+            //     ];
+            // }
+            // $memberOfProjects = ProjectHasMembers::where('user_id', $userid)->get(['project_id']);
+            // foreach ($memberOfProjects as $key => $memberOfProject) {
+            //     $p = Project::find($memberOfProject->project_id)->first(['name', 'start_date', 'deadline', 'summary', 'currency']);
+            //     $_projects[] = [
+            //         'name' => $p->name,
+            //         'start_date' => $p->start_date,
+            //         'deadline' => $p->deadline,
+            //         'summary' => $p->summary,
+            //         'currency' => $p->currency
+            //     ];
+            // }
 
-                $_projects[] = [
-                    'name' => $project->name,
-                    'start_date' => $project->start_date,
-                    'deadline' => $project->deadline,
-                    'summary' => $project->summary,
-                    'currency' => $project->currency
-                ];
-            }
-            $memberOfProjects = ProjectHasMembers::where('user_id', $userid)->get(['project_id']);
-            foreach ($memberOfProjects as $key => $memberOfProject) {
-                $p = Project::find($memberOfProject->project_id)->first(['name', 'start_date', 'deadline', 'summary', 'currency']);
-                $_projects[] = [
-                    'name' => $p->name,
-                    'start_date' => $p->start_date,
-                    'deadline' => $p->deadline,
-                    'summary' => $p->summary,
-                    'currency' => $p->currency
-                ];
-            }
+            // // Retrieve projects where the user is the manager
+            // $managerProjects = $user->projects()->whereNotNull('manage_by')->get();
 
-            // Retrieve projects where the user is the manager
-            $managerProjects = $user->projects()->whereNotNull('manage_by')->get();
+            // // Retrieve projects where the user is a member
+            // $memberProjects = $user->projects()->whereNull('manage_by')->get();
 
-            // Retrieve projects where the user is a member
-            $memberProjects = $user->projects()->whereNull('manage_by')->get();
+            // // Merge manager and member projects
+            // $allProjects = $managerProjects->merge($memberProjects);
+            // return($allProjects);
 
-            // Merge manager and member projects
-            $allProjects = $managerProjects->merge($memberProjects);
-            return($allProjects);
-
-            return response()->json(['status' => 'success', 'data' => $_projects]);
+            return response()->json(['status' => 'success', 'data' => $projects]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);

@@ -319,31 +319,31 @@ class ClientServices
             return response()->json($res);
         }
     }
-    public static function clienHasProjects($clientId)
-    {
-        try {
-            $projects = Project::where('client_id', $clientId)->get();
-            if (!$projects->isEmpty()) {
-                $data = [];
-                $_projects = [];
-                foreach ($projects as $key => $project) {
-                    $_projects[] = [
-                        'name' => $project->name,
-                        'start_date' => $project->start_date,
-                        'deadline' => $project->deadline,
-                        'summary' => $project->summary,
-                        'currency' => $project->currency
-                    ];
-                }
-                $data['projects'] = $_projects;
-                $response = ['status' => 'success', 'data' => $data];
-                return response()->json($response, 200);
-            } else {
-                throw new Exception('No Project Of This CLient.');
-            }
-        } catch (\Throwable $th) {
-            $res = ['status' => 'error', 'message' => $th->getMessage()];
-            return response()->json($res);
-        }
-    }
+    // public static function clienHasProjects($clientId)
+    // {
+    //     try {
+    //         $projects = Project::where('client_id', $clientId)->get();
+    //         if (!$projects->isEmpty()) {
+    //             $data = [];
+    //             $_projects = [];
+    //             foreach ($projects as $key => $project) {
+    //                 $_projects[] = [
+    //                     'name' => $project->name,
+    //                     'start_date' => $project->start_date,
+    //                     'deadline' => $project->deadline,
+    //                     'summary' => $project->summary,
+    //                     'currency' => $project->currency
+    //                 ];
+    //             }
+    //             $data['projects'] = $_projects;
+    //             $response = ['status' => 'success', 'data' => $data];
+    //             return response()->json($response, 200);
+    //         } else {
+    //             throw new Exception('No Project Of This CLient.');
+    //         }
+    //     } catch (\Throwable $th) {
+    //         $res = ['status' => 'error', 'message' => $th->getMessage()];
+    //         return response()->json($res);
+    //     }
+    // }
 }
