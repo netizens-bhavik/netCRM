@@ -28,7 +28,7 @@ class ClientServices
                 $destinationPath = 'clientAvtar';
                 $myimage = time() . $request->avtar->getClientOriginalName();
                 $request->avtar->move(public_path($destinationPath), $myimage);
-                $avtar = $destinationPath . '/' . $myimage;
+                $avtar = $myimage;
             } else {
                 $avtar = '';
             }
@@ -36,7 +36,7 @@ class ClientServices
                 $destinationPath = 'companyLogo';
                 $myimage = time() . $request->company_logo->getClientOriginalName();
                 $request->company_logo->move(public_path($destinationPath), $myimage);
-                $company_logo = $destinationPath . '/' . $myimage;
+                $company_logo = $myimage;
             } else {
                 $company_logo = '';
             }

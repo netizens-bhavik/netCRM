@@ -61,7 +61,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // find task with project id and set parameter status and priority
     Route::get('project-find/{projectId}', [ProjectController::class, 'findProject']);
     Route::get('my-project', [ProjectController::class, 'myProject']);
+
+    Route::get('task/{taskId}',[]);
     Route::get('my-task', [TaskController::class, 'myTask']);
+
     //statastics
     Route::get('statastics', [HomeController::class, 'statastics']);
 

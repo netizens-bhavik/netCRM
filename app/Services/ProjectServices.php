@@ -80,7 +80,7 @@ class ProjectServices
                     return response()->json(['status' => 'success', 'data' => $data]);
                 } else {
                     $clients = Client::latest('created_at')->get(['id', 'name']);
-                    $users = User::withoutRole('admin')->latest('created_at')->get();
+                    $users = User::withoutRole('super-admin')->latest('created_at')->get();
                     return view('project.create', compact('clients', 'users', 'data'));
                 }
             } else {
@@ -179,8 +179,7 @@ class ProjectServices
     public static function projectFind($projectId, $request)
     {
         try {
-            // dd($projectId, 'status', $request->status, 'priority', $request->priority);
-            $project = Project::find($projectId);
+            $project = Project::with('client', 'manageBy', 'members.user','tasks')->find($projectId);
             if ($project) {
                 $data = [];
                 $_project = [
@@ -317,7 +316,7 @@ class ProjectServices
     {
         try {
             $clients = Client::latest('created_at')->get(['id', 'name']);
-            $users = User::withoutRole('admin')->latest('created_at')->get();
+            $users = User::withoutRole('super-admin')->latest('created_at')->get();
             return view('project.create', compact('clients', 'users'));
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -326,7 +325,7 @@ class ProjectServices
     public static function allProjects()
     {
         try {
-            $projects = Project::all();
+            $projects = Project::with('members','tasks');
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
