@@ -168,4 +168,7 @@ class UserServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
+    public static function findUser($userId){
+dd("find User");
+    }
 }

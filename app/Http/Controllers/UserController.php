@@ -61,4 +61,12 @@ class UserController extends Controller
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
+    function findUser($userId){
+        try {
+            $response = UserServices::findUser($userId);
+            return $response;
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
 }
