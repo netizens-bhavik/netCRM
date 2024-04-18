@@ -4,7 +4,9 @@ namespace App\Services;
 
 use Exception;
 use App\Models\Role;
+use App\Models\Task;
 use App\Models\User;
+use App\Models\Project;
 use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -174,9 +176,21 @@ class UserServices
         try {
             $user = User::find($userId);
             if ($user) {
-                $response = ['status' => 'Success', 'data' => $user];
-            return response()->json($response);
-            }else{
+
+                $projects = Project::with('members')
+                    ->whereHas('members', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    })
+                    ->Orwhere('manage_by', $user->id)->get()->toArray();
+
+                $tasks = Task::with('members')
+                    ->whereHas('members', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    })
+                    ->Orwhere('manage_by', $user->id)->get()->toArray();
+                $response = ['status' => 'Success', 'data' => ['user' => $user, 'Project' => $projects, 'task' => $tasks]];
+                return response()->json($response);
+            } else {
                 throw new Exception('User Not Found.');
             }
         } catch (\Throwable $th) {
