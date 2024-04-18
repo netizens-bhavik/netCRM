@@ -163,7 +163,7 @@ class TaskServices
         try {
 
             $user = Auth::user();
-            $tasks = Task::with('members')
+            $tasks = Task::with('members.user','project','manageBy')
             ->whereHas('members', function ($query) use ($user){
                 $query->where('user_id',$user->id);
             })
