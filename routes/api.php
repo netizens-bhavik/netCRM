@@ -52,8 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //statastics
     Route::get('client-has-project/{clientId}',[ClientController::class,'clientHasProject']);
     Route::get('project-has-task/{projectId}',[ProjectController::class,'projectHasTask']);
-    Route::get('client-has-project/{clientId}', [ClientController::class, 'clientHasProject']);
-    Route::get('project-has-task/{projectId}', [ProjectController::class, 'projectHasTask']);
+    // Route::get('client-has-project/{clientId}', [ClientController::class, 'clientHasProject']);
+    // Route::get('project-has-task/{projectId}', [ProjectController::class, 'projectHasTask']);
 
     Route::get('Project-has-members/{projectId}', [ProjectHasMembersController::class, 'ProjectMembers']);
     Route::get('task-has-members/{taskId}', [TaskHasMembersController::class, 'taskMembers']);
