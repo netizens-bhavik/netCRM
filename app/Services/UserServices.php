@@ -37,6 +37,7 @@ class UserServices
             $roles = $user->getRoleNames();
             if ($user) {
                 $data = [
+                    'id' => $user->id,
                     'name' => $user->name,
                     'avtar' => $user->avtar,
                     'email' => $user->email,
@@ -156,7 +157,7 @@ class UserServices
             }
             $nonAdminUsers->each(function ($user) {
                 $firstRole = $user->roles->first();
-                $role = ['value' => $firstRole ? $firstRole->name : null,'label' => $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null];
+                $role = ['value' => $firstRole ? $firstRole->name : null, 'label' => $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null];
                 // $user->rolesName = $firstRole ? $firstRole->name : null;
                 // $user->rolesLabel = $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null;
                 $user->roleNmae = $role;
@@ -168,7 +169,18 @@ class UserServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    public static function findUser($userId){
-dd("find User");
+    public static function findUser($userId)
+    {
+        try {
+            $user = User::find($userId);
+            if ($user) {
+                $response = ['status' => 'Success', 'data' => $user];
+            return response()->json($response);
+            }else{
+                throw new Exception('User Not Found.');
+            }
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
     }
 }
