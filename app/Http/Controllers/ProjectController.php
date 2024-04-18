@@ -93,17 +93,24 @@ class ProjectController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function findProject(Request $request,$projectId){
+
+    function projectHasTask($projectId){
         try {
-            $response = ProjectServices::projectFind($projectId,$request);
+//           $response = ProjectServices::projectFind($projectId,$request);
+            $response = ProjectServices::projectHasTasks($projectId);
+
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function projectHasTask($projectId){
+
+
+    function findProject($projectId,FindProjectRequest $request){
         try {
-            $response = ProjectServices::projectHasTasks($projectId);
+//           $response = ProjectServices::projectHasTasks($projectId);
+            $response = ProjectServices::projectFind($projectId,$request);
+
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
