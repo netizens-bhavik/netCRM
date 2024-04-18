@@ -177,13 +177,13 @@ class UserServices
             $user = User::find($userId);
             if ($user) {
 
-                $projects = Project::with('members')
+                $projects = Project::with('members.user','client','manageBy')
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     })
                     ->Orwhere('manage_by', $user->id)->get()->toArray();
 
-                $tasks = Task::with('members')
+                $tasks = Task::with('members.user','project','manageBy')
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     })
