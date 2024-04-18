@@ -4,7 +4,9 @@ namespace App\Services;
 
 use Exception;
 use App\Models\Role;
+use App\Models\Task;
 use App\Models\User;
+use App\Models\Project;
 use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -37,6 +39,7 @@ class UserServices
             $roles = $user->getRoleNames();
             if ($user) {
                 $data = [
+                    'id' => $user->id,
                     'name' => $user->name,
                     'avtar' => $user->avtar,
                     'email' => $user->email,
@@ -156,7 +159,7 @@ class UserServices
             }
             $nonAdminUsers->each(function ($user) {
                 $firstRole = $user->roles->first();
-                $role = ['value' => $firstRole ? $firstRole->name : null,'label' => $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null];
+                $role = ['value' => $firstRole ? $firstRole->name : null, 'label' => $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null];
                 // $user->rolesName = $firstRole ? $firstRole->name : null;
                 // $user->rolesLabel = $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null;
                 $user->roleNmae = $role;
@@ -168,7 +171,30 @@ class UserServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    public static function findUser($userId){
-dd("find User");
+    public static function findUser($userId)
+    {
+        try {
+            $user = User::find($userId);
+            if ($user) {
+
+                $projects = Project::with('members.user','client','manageBy')
+                    ->whereHas('members', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    })
+                    ->Orwhere('manage_by', $user->id)->get()->toArray();
+
+                $tasks = Task::with('members.user','project','manageBy')
+                    ->whereHas('members', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    })
+                    ->Orwhere('manage_by', $user->id)->get()->toArray();
+                $response = ['status' => 'Success', 'data' => ['user' => $user, 'Project' => $projects, 'task' => $tasks]];
+                return response()->json($response);
+            } else {
+                throw new Exception('User Not Found.');
+            }
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
     }
 }
