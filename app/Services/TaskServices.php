@@ -202,7 +202,7 @@ class TaskServices
     public static function allTaskList()
     {
         try {
-            $tasks = Task::with('project','members.user','manageBy')->paginate(10);
+            $tasks = Task::with('project', 'members.user', 'manageBy')->paginate(10);
             return response()->json(['status' => 'success', 'data' => $tasks], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
@@ -240,11 +240,22 @@ class TaskServices
             return response()->json($res);
         }
     }
-    public static function create(){
+    public static function create()
+    {
         try {
 
             // $projects = Project::
             return view('Task.create');
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function findTask($taskId)
+    {
+        try {
+            $task = Task::with('project', 'members.user', 'manageBy')->find($taskId);
+            return response()->json(['status' => 'success','data' => $task]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);

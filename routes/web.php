@@ -6,10 +6,10 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-Route::get('client',[ClientController::class,'index'])->name('client.index');
+Route::get('/', function () {
+    return view('auth.login');
+});
+Route::get('client',[ClientController::class,'index'])->name('client.index')->middleware('auth.basic');
 Route::get('client-list',[ClientController::class,'clientList']);
 Route::get('create/client',[ClientController::class,'create'])->name('client.create');
 Route::post('client/store',[ClientController::class,'StoreClientForm']);

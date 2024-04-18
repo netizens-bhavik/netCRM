@@ -31,12 +31,8 @@ class DatabaseSeeder extends Seeder
             CitiesTableChunkFiveSeeder::class,
         ]);
         foreach (Role::roles as $key => $role) {
-            Role::create(['name' => $role]);
+            Role::create(['name' => $key]);
         }
-        // $roleAdmin = Role::create(['name' => 'admin']);
-        // Role::create(['name' => 'client']);
-        // Role::create(['name' => 'member']);
-
         $admin = User::create([
             'name' => 'Admin',
             'avtar' => url('admin.jpg'),
@@ -52,6 +48,6 @@ class DatabaseSeeder extends Seeder
             'about' => null
         ]);
 
-        $admin->assignRole('Super Admin');
+        $admin->assignRole('super-admin');
     }
 }

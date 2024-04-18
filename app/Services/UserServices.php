@@ -23,7 +23,7 @@ class UserServices
     public static function allUsers()
     {
         try {
-            $users = User::withoutRole('admin')->get();
+            $users = User::withoutRole('super-admin')->get();
             $response = ['status' => 'Success', 'data' => $users];
             return response()->json($response);
         } catch (\Throwable $th) {
@@ -148,11 +148,11 @@ class UserServices
         try {
             $role = [];
             if ($request->search && $request->sortBy && $request->order) {
-                $nonAdminUsers = User::with('roles')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
             } elseif ($request->sortBy && $request->order) {
-                $nonAdminUsers = User::with('roles')->withoutRole('admin')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $nonAdminUsers = User::with('roles')->withoutRole('admin')->paginate(10);
+                $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->paginate(10);
             }
             $nonAdminUsers->each(function ($user) {
                 $firstRole = $user->roles->first();

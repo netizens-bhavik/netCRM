@@ -181,43 +181,7 @@ class ProjectServices
         try {
             $project = Project::with('client', 'manageBy', 'members.user','tasks')->find($projectId);
             if ($project) {
-                $data = [];
-                $_project = [
-                    'client_id' => $project->client_id,
-                    'manage_by' => $project->manage_by,
-                    'name' => $project->name,
-                    'start_date' => $project->start_date,
-                    'deadline' => $project->deadline,
-                    'summary' => $project->summary,
-                    'currency' => $project->currency
-                ];
-                $data['project'] = $_project;
-                if ($request->status && $request->priority) {
-                    $tasks = Task::where('project_id', $projectId)->where('status', $request->status)->where('priority', $request->priority)->get();
-                } elseif ($request->status) {
-                    $tasks = Task::where('project_id', $projectId)->where('status', $request->status)->get();
-                } elseif ($request->priority) {
-                    $tasks = Task::where('project_id', $projectId)->where('priority', $request->priority)->get();
-                } else {
-                    $tasks = Task::where('project_id', $projectId)->get();
-                }
-                if (!$tasks->isEmpty()) {
-                    $_tasks = [];
-                    foreach ($tasks as $key => $task) {
-                        $_tasks[] = [
-                            'name' => $task->name,
-                            'start_date' => $task->start_date,
-                            'due_date' => $task->due_date,
-                            'description' => $task->description,
-                            'priority' => $task->priority,
-                            'status' => $task->status,
-                            'voice_memo' => url($task->voice_memo),
-                            'manage_by' => $task->manage_by
-                        ];
-                    }
-                    $data['tasks'] = $_tasks;
-                }
-                $response = ['status' => 'success', 'data' => $data];
+                $response = ['status' => 'success', 'data' => $project];
                 return response()->json($response, 200);
             } else {
                 throw new Exception('Project Not Found');
