@@ -195,7 +195,7 @@ class ProjectServices
     {
         try {
             $user = Auth::user();
-            $projects = Project::with('members')
+            $projects = Project::with('members.user','client')
             ->whereHas('members', function ($query) use ($user){
                 $query->where('user_id',$user->id);
             })
