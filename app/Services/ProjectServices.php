@@ -200,6 +200,7 @@ class ProjectServices
                 $query->where('user_id',$user->id);
             })
             ->Orwhere('manage_by',$user->id)->get()->toArray();
+
             // $data = [];
             // $_projects = [];
             // foreach ($projects as $key => $project) {

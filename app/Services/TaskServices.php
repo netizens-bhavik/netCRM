@@ -161,36 +161,44 @@ class TaskServices
     public static function myTask()
     {
         try {
-            $userid = Auth::id();
-            $_tasks = [];
-            $tasks = Task::where('manage_by', $userid)->get(['name', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo']);
-            foreach ($tasks as $key => $task) {
-                $_tasks[] = [
-                    'name' => $task->name,
-                    'start_date' => $task->start_date,
-                    'due_date' => $task->due_date,
-                    'description' => $task->description,
-                    'priority' => $task->priority,
-                    'status' => $task->status,
-                    'voice_memo' => $task->voice_memo
-                ];
-            }
-            $memberOfTasks = TaskHasMembers::where('user_id', $userid)->get(['task_id']);
-            foreach ($memberOfTasks as $key => $memberOfTask) {
-                $t = Task::find($memberOfTask->task_id)->first(['name', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo']);
-                $_tasks[] = [
-                    'name' => $t->name,
-                    'start_date' => $t->start_date,
-                    'due_date' => $t->due_date,
-                    'description' => $t->description,
-                    'priority' => $t->priority,
-                    'status' => $t->status,
-                    'voice_memo' => $t->voice_memo
-                ];
-            }
-            return response()->json(['status' => 'success', 'data' => $_tasks]);
+
             $user = Auth::user();
-            $_tasks = [];
+            $tasks = Task::with('members')
+            ->whereHas('members', function ($query) use ($user){
+                $query->where('user_id',$user->id);
+            })
+            ->Orwhere('manage_by',$user->id)->get()->toArray();
+
+            // $userid = Auth::id();
+            // $_tasks = [];
+            // $tasks = Task::where('manage_by', $userid)->get(['name', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo']);
+            // foreach ($tasks as $key => $task) {
+            //     $_tasks[] = [
+            //         'name' => $task->name,
+            //         'start_date' => $task->start_date,
+            //         'due_date' => $task->due_date,
+            //         'description' => $task->description,
+            //         'priority' => $task->priority,
+            //         'status' => $task->status,
+            //         'voice_memo' => $task->voice_memo
+            //     ];
+            // }
+            // $memberOfTasks = TaskHasMembers::where('user_id', $userid)->get(['task_id']);
+            // foreach ($memberOfTasks as $key => $memberOfTask) {
+            //     $t = Task::find($memberOfTask->task_id)->first(['name', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo']);
+            //     $_tasks[] = [
+            //         'name' => $t->name,
+            //         'start_date' => $t->start_date,
+            //         'due_date' => $t->due_date,
+            //         'description' => $t->description,
+            //         'priority' => $t->priority,
+            //         'status' => $t->status,
+            //         'voice_memo' => $t->voice_memo
+            //     ];
+            // }
+            // return response()->json(['status' => 'success', 'data' => $_tasks]);
+            // $user = Auth::user();
+            // $_tasks = [];
 
 
             return response()->json(['status' => 'success', 'data' => $tasks]);
