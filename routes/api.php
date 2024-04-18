@@ -12,7 +12,9 @@ use App\Http\Controllers\UserController;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
-
+Route::get('/',function (){
+    return ("dfg");
+});
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -60,8 +62,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // find task with project id and set parameter status and priority
     Route::get('project-find/{projectId}', [ProjectController::class, 'findProject']);
-    Route::get('my-project', [ProjectController::class, 'myProject']);
-    Route::get('my-task', [TaskController::class, 'myTask']);
+    // Route::get('my-project', [ProjectController::class, 'myProject']);
+
+    Route::get('task-find/{taskId}',[TaskController::class,'findTask']);
+    // Route::get('my-task', [TaskController::class,'myTask']);
+
     //statastics
     Route::get('statastics', [HomeController::class, 'statastics']);
 
