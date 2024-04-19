@@ -40,8 +40,9 @@ class UserServices
                 $response = ['status' => 'Success', 'data' => $data];
                 return response()->json($response);
             } else {
-                // Handle case when project_id is not provided
-                throw new Exception('Project ID is missing');
+                $users = User::withoutRole('super-admin')->get();
+                $response = ['status' => 'Success', 'data' => $users];
+
             }
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
