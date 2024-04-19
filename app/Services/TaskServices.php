@@ -179,11 +179,11 @@ class TaskServices
     public static function allTaskList($request)
     {
         try {
-            if($request->search && $request->sortBy && $request->order){
+            if ($request->search && $request->sortBy && $request->order) {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
-            }elseif($request->sortBy && $request->order){
+            } elseif ($request->sortBy && $request->order) {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->orderBy($request->sortBy, $request->order)->paginate(10);
-            }else{
+            } else {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->paginate(10);
             }
             return response()->json(['status' => 'success', 'data' => $tasks], 200);
@@ -274,6 +274,41 @@ class TaskServices
             } else {
                 throw new Exception('Task Not Found');
             }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function userTask($request, $userId)
+    {
+        try {
+            $user = User::find($userId);
+            if ($user) {
+                if ($request->search && $request->sortBy && $request->order) {
+                    $tasks = Task::with('members.user', 'project', 'manageBy')
+                        ->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)
+                        ->whereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->Orwhere('manage_by', $user->id)->paginate(10);
+                } elseif ($request->sortBy && $request->order) {
+                    $tasks = Task::with('members.user', 'project', 'manageBy')->orderBy($request->sortBy, $request->order)
+                        ->whereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->Orwhere('manage_by', $user->id)->paginate(10);
+                } else {
+                    $tasks = Task::with('members.user', 'project', 'manageBy')
+                        ->whereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->Orwhere('manage_by', $user->id)->paginate(10);
+                }
+            } else {
+                throw new Exception('User Not Found.');
+            }
+
+            return response()->json(['status' => 'success', 'data' => $tasks]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);

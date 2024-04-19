@@ -78,4 +78,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('all-roles',[HomeController::class,'allRole']);
     //task status change
     Route::get('task-status-change/{taskId}/{status}',[TaskController::class,'statusChange']);
+    //all projectList of user with pagination
+    Route::get('user-projects/{userId}',[ProjectController::class,'userProject']);
+    Route::get('user-Tasks/{userId}',[TaskController::class,'userTask']);
+
 });

@@ -110,6 +110,11 @@ class UserServices
                 } else {
                     $password = $user->password;
                 }
+                if ($request->role) {
+                    // $user->removeRole($user->getRoleNames());
+                    // $user->assignRole($request->role);
+                    $user->syncRoles([$request->role]);
+                }
                 $user->update([
                     'name' => $request->name,
                     'avtar' => $myimage,
@@ -176,7 +181,8 @@ class UserServices
         try {
             $user = User::find($userId);
             if ($user) {
-
+                $roles = $user->getRoleNames();
+                $user['role'] = $roles;
                 $projects = Project::with('members.user', 'client', 'manageBy')
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);

@@ -123,4 +123,12 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
+    function userTask(Request $request,$userId){
+        try {
+            $response = TaskServices::userTask($request,$userId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
 }
