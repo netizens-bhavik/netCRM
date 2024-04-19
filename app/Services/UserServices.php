@@ -30,8 +30,8 @@ class UserServices
                 $project = Project::find($request->project_id);
                 if ($project) {
                     $users = User::withoutRole('super-admin')->get();
-                    $p = Project::with('members.user')->get();
-                    $data = ['users' => $users, 'projectMember' => $p]; // Include both users and project members
+                    $p = Project::with('members.user')->where('id',$request->project_id)->get();
+                    $data = [$p]; // Include both users and project members
                 } else {
                     throw new Exception('Project Not Found');
                 }
