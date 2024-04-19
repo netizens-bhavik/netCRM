@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\passwordResetRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
@@ -64,6 +65,14 @@ class UserController extends Controller
     function findUser($userId){
         try {
             $response = UserServices::findUser($userId);
+            return $response;
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
+    function resetPassword(passwordResetRequest $request,$userId){
+        try {
+            $response = UserServices::resetPassword($request,$userId);
             return $response;
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);

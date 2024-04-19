@@ -6,6 +6,7 @@ use Exception;
 use DataTables;
 use App\Models\Role;
 use App\Models\Task;
+use App\Models\User;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use App\Models\TaskHasMembers;
@@ -163,43 +164,11 @@ class TaskServices
         try {
 
             $user = Auth::user();
-            $tasks = Task::with('members.user','project','manageBy')
-            ->whereHas('members', function ($query) use ($user){
-                $query->where('user_id',$user->id);
-            })
-            ->Orwhere('manage_by',$user->id)->get()->toArray();
-
-            // $userid = Auth::id();
-            // $_tasks = [];
-            // $tasks = Task::where('manage_by', $userid)->get(['name', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo']);
-            // foreach ($tasks as $key => $task) {
-            //     $_tasks[] = [
-            //         'name' => $task->name,
-            //         'start_date' => $task->start_date,
-            //         'due_date' => $task->due_date,
-            //         'description' => $task->description,
-            //         'priority' => $task->priority,
-            //         'status' => $task->status,
-            //         'voice_memo' => $task->voice_memo
-            //     ];
-            // }
-            // $memberOfTasks = TaskHasMembers::where('user_id', $userid)->get(['task_id']);
-            // foreach ($memberOfTasks as $key => $memberOfTask) {
-            //     $t = Task::find($memberOfTask->task_id)->first(['name', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo']);
-            //     $_tasks[] = [
-            //         'name' => $t->name,
-            //         'start_date' => $t->start_date,
-            //         'due_date' => $t->due_date,
-            //         'description' => $t->description,
-            //         'priority' => $t->priority,
-            //         'status' => $t->status,
-            //         'voice_memo' => $t->voice_memo
-            //     ];
-            // }
-            // return response()->json(['status' => 'success', 'data' => $_tasks]);
-            // $user = Auth::user();
-            // $_tasks = [];
-
+            $tasks = Task::with('members.user', 'project', 'manageBy')
+                ->whereHas('members', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->Orwhere('manage_by', $user->id)->get()->toArray();
 
             return response()->json(['status' => 'success', 'data' => $tasks]);
         } catch (\Throwable $th) {
@@ -207,10 +176,16 @@ class TaskServices
             return response()->json($res);
         }
     }
-    public static function allTaskList()
+    public static function allTaskList($request)
     {
         try {
-            $tasks = Task::with('project', 'members.user', 'manageBy')->paginate(10);
+            if ($request->search && $request->sortBy && $request->order) {
+                $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
+            } elseif ($request->sortBy && $request->order) {
+                $tasks = Task::with('project', 'members.user', 'manageBy')->orderBy($request->sortBy, $request->order)->paginate(10);
+            } else {
+                $tasks = Task::with('project', 'members.user', 'manageBy')->paginate(10);
+            }
             return response()->json(['status' => 'success', 'data' => $tasks], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
@@ -252,8 +227,11 @@ class TaskServices
     {
         try {
 
-            // $projects = Project::
-            return view('Task.create');
+            $projects = Project::all(['id', 'name']);
+            $users = User::withoutRole('super-admin')->get();
+            $Status = Task::status;
+            $priorities = Task::priority;
+            return view('Task.create', compact('projects', 'users', 'Status', 'priorities'));
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
@@ -263,7 +241,74 @@ class TaskServices
     {
         try {
             $task = Task::with('project', 'members.user', 'manageBy')->find($taskId);
-            return response()->json(['status' => 'success','data' => $task]);
+            if ($task) {
+                $task->members->each(function ($member) {
+                    $firstRole = $member->user->roles->first();
+                    $roleName = $firstRole ? $firstRole->name : null;
+                    $label = $roleName ? Role::roles[$roleName] ?? $roleName : null;
+
+                    $member->user->roleName = ['value' => $roleName, 'label' => $label];
+                    unset($member->user->roles);
+                });
+                return response()->json(['status' => 'success', 'data' => $task]);
+            } else {
+                throw new Exception('task Not Found');
+            }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function statusChange($taskId, $Status)
+    {
+        try {
+            $task = Task::find($taskId);
+            if ($task) {
+                $Statuses = Task::status;
+                if (in_array($Status, $Statuses)) {
+                    $task->update(['status' => $Status]);
+                    return response()->json(['status' => 'success', 'message' => 'Status Change Successfully.']);
+                } else {
+                    throw new Exception('Status Is In Correct.');
+                }
+            } else {
+                throw new Exception('Task Not Found');
+            }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function userTask($request, $userId)
+    {
+        try {
+            $user = User::find($userId);
+            if ($user) {
+                if ($request->search && $request->sortBy && $request->order) {
+                    $tasks = Task::with('members.user', 'project', 'manageBy')
+                        ->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)
+                        ->whereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->Orwhere('manage_by', $user->id)->paginate(10);
+                } elseif ($request->sortBy && $request->order) {
+                    $tasks = Task::with('members.user', 'project', 'manageBy')->orderBy($request->sortBy, $request->order)
+                        ->whereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->Orwhere('manage_by', $user->id)->paginate(10);
+                } else {
+                    $tasks = Task::with('members.user', 'project', 'manageBy')
+                        ->whereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->Orwhere('manage_by', $user->id)->paginate(10);
+                }
+            } else {
+                throw new Exception('User Not Found.');
+            }
+
+            return response()->json(['status' => 'success', 'data' => $tasks]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
