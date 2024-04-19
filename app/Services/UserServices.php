@@ -41,7 +41,7 @@ class UserServices
                 return response()->json($response);
             } else {
                 $users = User::withoutRole('super-admin')->get();
-                $response = ['status' => 'Success', 'data' => $users];
+                $response = ['status' => 'Success', 'data' => ['users' => $users]];
                 return response()->json($response);
 
             }
