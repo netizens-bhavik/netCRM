@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\ProjectHasMembers;
 use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -26,29 +27,17 @@ class UserServices
     public static function allUsers($request)
     {
         try {
+            $users = User::withoutRole('super-admin')->get();
             if ($request->project_id) {
-                $project = Project::find($request->project_id);
-                if ($project) {
-                    $users = User::withoutRole('super-admin')->get();
-                    $p = Project::with('members.user')->where('id',$request->project_id)->get();
-                    $data = $p; // Include both users and project members
-                } else {
-                    throw new Exception('Project Not Found');
-                }
-
-                // Move the JSON response outside the if block
-                $response = ['status' => 'Success', 'data' => $data];
-                return response()->json($response);
-            } else {
-                $users = User::withoutRole('super-admin')->get();
-                $response = ['status' => 'Success', 'data' => $users];
-                return response()->json($response);
-
+                $users = DB::select('select u.*  from project_has_members as pm join users as u on u.id = pm.user_id where pm.project_id = "'.$request->project_id.'"');
             }
+            $response = ['status' => 'Success', 'data' => $users];
+            return response()->json($response);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
+
 
     public static function show($request)
     {

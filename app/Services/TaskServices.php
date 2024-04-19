@@ -30,7 +30,7 @@ class TaskServices
                 $request->voice_memo->move(public_path($destinationPath), $myimage);
                 // $voice_memo = $destinationPath . '/' . $myimage;
             } else {
-                $voice_memo = '';
+                $myimage = '';
             }
             $task = Task::create([
                 'name' => $request->name,
