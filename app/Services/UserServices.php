@@ -29,16 +29,17 @@ class UserServices
             if ($request->project_id) {
                 $project = Project::find($request->project_id);
                 if ($project) {
+                    $users = User::withoutRole('super-admin')->get();
                     $p = Project::with('members.user')->get();
+                    $data = ['users' => $users, 'projectMember' => $p];
                 } else {
                     throw new Exception('Project Not Found');
                 }
-            }
-                $users = User::withoutRole('super-admin')->get();
 
-            $data = ['users' => $users, 'projectMember' => $p];
-            $response = ['status' => 'Success', 'data' => $data];
-            return response()->json($response);
+                            $data = ['users' => $users];
+                            $response = ['status' => 'Success', 'data' => $data];
+                            return response()->json($response);
+            }
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
