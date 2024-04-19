@@ -224,7 +224,9 @@ class ProjectServices
         try {
             if ($request->search && $request->sortBy && $request->order) {
                 $projects = Project::with('client', 'manageBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } elseif ($request->sortBy && $request->order) {
+            } elseif($request->search){
+                $projects = Project::with('client', 'manageBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
+            }elseif ($request->sortBy && $request->order) {
                 $projects = Project::with('client', 'manageBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
                 $projects = Project::with('client', 'manageBy', 'members.user')->paginate(10);

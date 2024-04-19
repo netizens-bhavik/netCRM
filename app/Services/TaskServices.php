@@ -180,6 +180,8 @@ class TaskServices
     {
         try {
             if ($request->search && $request->sortBy && $request->order) {
+                $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
+            }elseif($request->search){
                 $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
             } elseif ($request->sortBy && $request->order) {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->orderBy($request->sortBy, $request->order)->paginate(10);
