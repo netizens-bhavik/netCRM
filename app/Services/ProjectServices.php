@@ -294,7 +294,6 @@ class ProjectServices
                             })
                             ->orWhere('manage_by', $user->id);
                         });
-
         if ($request->has('search')) {
             $searchTerm = $request->search;
             $query->where('name', 'like', '%' . $searchTerm . '%');

@@ -297,6 +297,8 @@ class ClientServices
             $data = [];
             if ($request->search && $request->sortBy && $request->order) {
                 $clients = Client::with('country', 'state', 'city')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
+            }elseif($request->search){
+                $clients = Client::with('country', 'state', 'city')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
             } elseif ($request->sortBy && $request->order) {
                 $clients = Client::with('country', 'state', 'city')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {

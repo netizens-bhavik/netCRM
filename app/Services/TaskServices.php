@@ -291,7 +291,14 @@ class TaskServices
                             $query->where('user_id', $user->id);
                         })
                         ->Orwhere('manage_by', $user->id)->paginate(10);
-                } elseif ($request->sortBy && $request->order) {
+                } elseif($request->search){
+                    $tasks = Task::with('members.user', 'project', 'manageBy')
+                        ->where('name', 'like', '%' . $request->search . '%')
+                        ->whereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->Orwhere('manage_by', $user->id)->paginate(10);
+                }elseif ($request->sortBy && $request->order) {
                     $tasks = Task::with('members.user', 'project', 'manageBy')->orderBy($request->sortBy, $request->order)
                         ->whereHas('members', function ($query) use ($user) {
                             $query->where('user_id', $user->id);
