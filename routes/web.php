@@ -7,7 +7,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('welcome');
 });
 Route::get('client',[ClientController::class,'index'])->name('client.index')->middleware('auth.basic');
 Route::get('client-list',[ClientController::class,'clientList']);
