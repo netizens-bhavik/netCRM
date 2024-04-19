@@ -31,19 +31,23 @@ class UserServices
                 if ($project) {
                     $users = User::withoutRole('super-admin')->get();
                     $p = Project::with('members.user')->get();
-                    $data = ['users' => $users, 'projectMember' => $p];
+                    $data = ['users' => $users, 'projectMember' => $p]; // Include both users and project members
                 } else {
                     throw new Exception('Project Not Found');
                 }
 
-                            $data = ['users' => $users];
-                            $response = ['status' => 'Success', 'data' => $data];
-                            return response()->json($response);
+                // Move the JSON response outside the if block
+                $response = ['status' => 'Success', 'data' => $data];
+                return response()->json($response);
+            } else {
+                // Handle case when project_id is not provided
+                throw new Exception('Project ID is missing');
             }
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
+
     public static function show($request)
     {
         try {
