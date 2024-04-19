@@ -42,6 +42,7 @@ class UserServices
             } else {
                 $users = User::withoutRole('super-admin')->get();
                 $response = ['status' => 'Success', 'data' => $users];
+                return response()->json($response);
 
             }
         } catch (\Throwable $th) {
