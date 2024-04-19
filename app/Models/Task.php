@@ -18,10 +18,10 @@ class Task extends Model
         'id', 'name', 'project_id', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo', 'manage_by'
     ];
     public const priority = [
-        'High', 'Low', 'Medium'
+        'High', 'Low', 'Medium', 'Hold'
     ];
     public const status = [
-        'Pending', 'Hold', 'In-progress', 'Completed'
+        'Active', 'Inactive', 'Hold', 'Inprocess', 'Cancel'
     ];
     /**
      * Get the project that owns the Task

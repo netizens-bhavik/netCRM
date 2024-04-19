@@ -28,7 +28,6 @@ Route::post('project/{ProjectId}/update',[ProjectController::class,'update']);
 Route::get('task',[TaskController::class,'index'])->name('task.index');
 Route::get('task-list',[TaskController::class,'taskList']);
 Route::get('task/create',[TaskController::class,'create'])->name('task.create');
-Route::post('task-store',[TaskController::class,'store']);
 
 //get Dynamic City
 Route::any('get-states/{countryId}',[HomeController::class,'getStates']);

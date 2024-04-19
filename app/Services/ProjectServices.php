@@ -3,14 +3,13 @@
 namespace App\Services;
 
 use Exception;
-use DataTables;
-use App\Models\Role;
 use App\Models\Task;
-use App\Models\User;
-use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use App\Models\ProjectHasMembers;
+use DataTables;
+use App\Models\User;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectServices
@@ -180,20 +179,9 @@ class ProjectServices
     public static function projectFind($projectId, $request)
     {
         try {
-            $project = Project::with('client', 'manageBy', 'members.user', 'tasks.members.user')->find($projectId);
-
+            $project = Project::with('client', 'manageBy', 'members.user','tasks')->find($projectId);
             if ($project) {
-                $project->members->each(function ($member) {
-                    $firstRole = $member->user->roles->first();
-                    $roleName = $firstRole ? $firstRole->name : null;
-                    // Assuming Role::roles is an array mapping role names to labels
-                    $label = $roleName ? Role::roles[$roleName] ?? $roleName : null;
-
-                    $member->user->roleName = ['value' => $roleName, 'label' => $label];
-                    unset($member->user->roles);
-                });
-                $response = ['status' => 'success', 'data' => $project->toArray()];
-
+                $response = ['status' => 'success', 'data' => $project];
                 return response()->json($response, 200);
             } else {
                 throw new Exception('Project Not Found');
@@ -207,11 +195,45 @@ class ProjectServices
     {
         try {
             $user = Auth::user();
-            $projects = Project::with('members.user', 'client', 'manageBy')
-                ->whereHas('members', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                })
-                ->Orwhere('manage_by', $user->id)->get()->toArray();
+            $projects = Project::with('members.user','client','manageBy')
+            ->whereHas('members', function ($query) use ($user){
+                $query->where('user_id',$user->id);
+            })
+            ->Orwhere('manage_by',$user->id)->get()->toArray();
+
+            // $data = [];
+            // $_projects = [];
+            // foreach ($projects as $key => $project) {
+
+            //     $_projects[] = [
+            //         'name' => $project->name,
+            //         'start_date' => $project->start_date,
+            //         'deadline' => $project->deadline,
+            //         'summary' => $project->summary,
+            //         'currency' => $project->currency
+            //     ];
+            // }
+            // $memberOfProjects = ProjectHasMembers::where('user_id', $userid)->get(['project_id']);
+            // foreach ($memberOfProjects as $key => $memberOfProject) {
+            //     $p = Project::find($memberOfProject->project_id)->first(['name', 'start_date', 'deadline', 'summary', 'currency']);
+            //     $_projects[] = [
+            //         'name' => $p->name,
+            //         'start_date' => $p->start_date,
+            //         'deadline' => $p->deadline,
+            //         'summary' => $p->summary,
+            //         'currency' => $p->currency
+            //     ];
+            // }
+
+            // // Retrieve projects where the user is the manager
+            // $managerProjects = $user->projects()->whereNotNull('manage_by')->get();
+
+            // // Retrieve projects where the user is a member
+            // $memberProjects = $user->projects()->whereNull('manage_by')->get();
+
+            // // Merge manager and member projects
+            // $allProjects = $managerProjects->merge($memberProjects);
+            // return($allProjects);
 
             return response()->json(['status' => 'success', 'data' => $projects]);
         } catch (\Throwable $th) {
@@ -219,16 +241,10 @@ class ProjectServices
             return response()->json($res);
         }
     }
-    public static function allProjectList($request)
+    public static function allProjectList()
     {
         try {
-            if ($request->search && $request->sortBy && $request->order) {
-                $projects = Project::with('client', 'manageBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } elseif ($request->sortBy && $request->order) {
-                $projects = Project::with('client', 'manageBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } else {
-                $projects = Project::with('client', 'manageBy', 'members.user')->paginate(10);
-            }
+            $projects = Project::with('client', 'manageBy', 'members.user')->paginate(10);
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
@@ -276,43 +292,11 @@ class ProjectServices
     public static function allProjects()
     {
         try {
-            $projects = Project::with('members', 'tasks')->get();
+            $projects = Project::with('members','tasks');
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
         }
     }
-    public static function userProject($request, $userId)
-{
-    try {
-        $user = User::find($userId);
-        $query = Project::with('members.user', 'client', 'manageBy')
-                        ->where(function ($query) use ($user) {
-                            $query->whereHas('members', function ($q) use ($user) {
-                                $q->where('user_id', $user->id);
-                            })
-                            ->orWhere('manage_by', $user->id);
-                        });
-
-        if ($request->has('search')) {
-            $searchTerm = $request->search;
-            $query->where('name', 'like', '%' . $searchTerm . '%');
-        }
-
-        if ($request->has('sortBy') && $request->has('order')) {
-            $sortBy = $request->sortBy;
-            $order = $request->order;
-            $query->orderBy($sortBy, $order);
-        }
-
-        $projects = $query->paginate(10);
-
-        return response()->json(['status' => 'success', 'data' => $projects]);
-    } catch (\Throwable $th) {
-        $res = ['status' => 'error', 'message' => $th->getMessage()];
-        return response()->json($res);
-    }
-}
-
 }

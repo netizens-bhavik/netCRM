@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         }
         $admin = User::create([
             'name' => 'Admin',
-            'avtar' => 'admin.png',
+            'avtar' => url('admin.jpg'),
             'email' => 'netAdmin@test.com',
             'password' => Hash::make('password'),
             'phone_no' => '7046260656',

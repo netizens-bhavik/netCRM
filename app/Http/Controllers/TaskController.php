@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TaskCreateRequest;
 use App\Http\Requests\TaskUpdateRequest;
 use App\Services\TaskServices;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -72,10 +71,10 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function allTaskList(Request $request)
+    function allTaskList()
     {
         try {
-            $response = TaskServices::allTaskList($request);
+            $response = TaskServices::allTaskList();
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
@@ -110,22 +109,6 @@ class TaskController extends Controller
     function findTask($taskId){
         try {
             $response = TaskServices::findTask($taskId);
-            return $response;
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
-        }
-    }
-    function statusChange($taskId,$Status){
-        try {
-            $response = TaskServices::statusChange($taskId,$Status);
-            return $response;
-        } catch (\Throwable $th) {
-            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
-        }
-    }
-    function userTask(Request $request,$userId){
-        try {
-            $response = TaskServices::userTask($request,$userId);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);

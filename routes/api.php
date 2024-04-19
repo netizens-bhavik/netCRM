@@ -22,7 +22,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('users/{userId}', [UserController::class, 'userDelete']);
     Route::get('allUsers',[UserController::class,'allUsers']);
     Route::get('findUser/{userId}',[UserController::class,'findUser']);
-    Route::post('reset-password/{userId}',[UserController::class,'resetPassword']);
 
     Route::get('all-client-list', [ClientController::class, 'allClientList']);
     Route::post('client/create', [ClientController::class, 'store']);
@@ -76,10 +75,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Roles
     Route::get('all-roles',[HomeController::class,'allRole']);
-    //task status change
-    Route::get('task-status-change/{taskId}/{status}',[TaskController::class,'statusChange']);
-    //all projectList of user with pagination
-    Route::get('user-projects/{userId}',[ProjectController::class,'userProject']);
-    Route::get('user-Tasks/{userId}',[TaskController::class,'userTask']);
-
 });

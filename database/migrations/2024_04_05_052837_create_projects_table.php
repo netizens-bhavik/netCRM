@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('start_date');
             $table->date('deadline');
-            $table->longText('summary');
+            $table->string('summary');
             $table->string('currency')->nullable();
             $table->timestamps();
             $table->softDeletes();
