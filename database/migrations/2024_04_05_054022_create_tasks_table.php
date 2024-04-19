@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->uuid('project_id');
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->date('start_date');
             $table->date('due_date');
             $table->string('description');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('voice_memo');
             $table->uuid('manage_by');
-            $table->foreign('manage_by')->references('id')->on('users');
+            $table->foreign('manage_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

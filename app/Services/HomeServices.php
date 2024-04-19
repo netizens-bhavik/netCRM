@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Role;
 use App\Models\Task;
+use App\Models\User;
+use App\Models\Client;
 use App\Models\Project;
 use App\Models\TaskHasMembers;
 use App\Models\ProjectHasMembers;
@@ -37,7 +39,9 @@ class HomeServices
             $memberOfProjectCount = $memberOfProjects->count();
             $_projectcount = ($projectCount + $memberOfProjectCount);
 
-            $res = ['status' => 'success', 'data' => ['tasks' => $_Taskcounts, 'projects' => $_projectcount]];
+            $clientsCount = Client::count();
+            $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->count();
+            $res = ['status' => 'success', 'data' => ['tasks' => $_Taskcounts, 'projects' => $_projectcount,'client' => $clientsCount,'users' => $nonAdminUsers]];
             return response()->json($res);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];

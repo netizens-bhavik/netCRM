@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('client_id');
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->uuid('manage_by');
-            $table->foreign('manage_by')->references('id')->on('users');
+            $table->foreign('manage_by')->references('id')->on('users')->onDelete('cascade');
             $table->string('name');
             $table->date('start_date');
             $table->date('deadline');

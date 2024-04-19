@@ -46,7 +46,8 @@ class UserController extends Controller
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    function userDelete($userId){
+    function userDelete($userId)
+    {
         try {
             $response = UserServices::userDelete($userId);
             return $response;
@@ -54,15 +55,17 @@ class UserController extends Controller
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    function allUsers(){
+    function allUsers(Request $request)
+    {
         try {
-            $response = UserServices::allUsers();
+            $response = UserServices::allUsers($request);
             return $response;
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    function findUser($userId){
+    function findUser($userId)
+    {
         try {
             $response = UserServices::findUser($userId);
             return $response;
@@ -70,9 +73,19 @@ class UserController extends Controller
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    function resetPassword(passwordResetRequest $request,$userId){
+    function resetPassword(passwordResetRequest $request, $userId)
+    {
         try {
-            $response = UserServices::resetPassword($request,$userId);
+            $response = UserServices::resetPassword($request, $userId);
+            return $response;
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
+    function forgotPassword(Request $request)
+    {
+        try {
+            $response = UserServices::forgotPassword($request);
             return $response;
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);

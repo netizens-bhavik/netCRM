@@ -64,4 +64,13 @@ class Project extends Model
     {
         return $this->hasMany(Task::class);
     }
+    public function delete()
+    {
+        // Delete associated tasks
+        $this->tasks()->delete();
+
+        // Then delete the project itself
+        return parent::delete();
+    }
+
 }

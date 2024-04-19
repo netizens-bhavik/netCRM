@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('allUsers',[UserController::class,'allUsers']);
     Route::get('findUser/{userId}',[UserController::class,'findUser']);
     Route::post('reset-password/{userId}',[UserController::class,'resetPassword']);
+    Route::post('forgot-password',[UserController::class,'forgotPassword']);
 
     Route::get('all-client-list', [ClientController::class, 'allClientList']);
     Route::post('client/create', [ClientController::class, 'store']);

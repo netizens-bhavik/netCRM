@@ -36,4 +36,16 @@ class Client extends Model
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+    public function delete()
+    {
+        // Delete associated projects
+        $this->projects->each->delete();
+
+        // Then delete the client itself
+        return parent::delete();
+    }
 }

@@ -12,6 +12,7 @@ use App\Models\Project;
 use Illuminate\Support\Str;
 use App\Models\ProjectHasMembers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProjectServices
 {
@@ -129,11 +130,15 @@ class ProjectServices
     }
     public static function deleteProject($request, $projectId)
     {
+        // DB::beginTransaction();
         try {
             $project = Project::find($projectId);
+
+
             if (!empty($project)) {
-                $projectMembers = ProjectHasMembers::where('project_id', $projectId)->delete();
+                $projectMembers = Project::find($projectId)->delete();
                 $project->delete();
+                // DB::commit();
                 if ($request->expectsJson()) {
                     return response()->json(['status' => 'success', 'message' => 'Project Deleted Successfully.']);
                 } else {
@@ -144,6 +149,7 @@ class ProjectServices
                 throw new Exception('Project Not Found');
             }
         } catch (\Throwable $th) {
+            // DB::rollBack();
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
         }

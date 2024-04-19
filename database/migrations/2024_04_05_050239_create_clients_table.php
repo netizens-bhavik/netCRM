@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('avtar')->nullable();
             $table->unsignedBigInteger('country_id');
-            $table->foreign('country_id')->references('id')->on('countries');
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->unsignedBigInteger('state_id');
-            $table->foreign('state_id')->references('id')->on('states');
+            $table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
             $table->unsignedBigInteger('city_id');
-            $table->foreign('city_id')->references('id')->on('cities');
+            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->string('zipcode');
             $table->string('phone_no');
             $table->string('company_name');
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('office_mobile');
             $table->string('address')->nullable();
             $table->uuid('added_by');
-            $table->foreign('added_by')->references('id')->on('users');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->string('note')->nullable();
             $table->timestamps();
             $table->softDeletes();

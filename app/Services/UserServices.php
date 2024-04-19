@@ -10,6 +10,7 @@ use App\Models\Project;
 use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 
 class UserServices
@@ -22,11 +23,21 @@ class UserServices
     {
         //
     }
-    public static function allUsers()
+    public static function allUsers($request)
     {
         try {
-            $users = User::withoutRole('super-admin')->get();
-            $response = ['status' => 'Success', 'data' => $users];
+            if ($request->project_id) {
+                $project = Project::find($request->project_id);
+                if ($project) {
+                    $p = Project::with('members.user')->get();
+                } else {
+                    throw new Exception('Project Not Found');
+                }
+            }
+                $users = User::withoutRole('super-admin')->get();
+
+            $data = ['users' => $users, 'projectMember' => $p];
+            $response = ['status' => 'Success', 'data' => $data];
             return response()->json($response);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
@@ -157,7 +168,7 @@ class UserServices
             $role = [];
             if ($request->search && $request->sortBy && $request->order) {
                 $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            }elseif($request->search){
+            } elseif ($request->search) {
                 $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
             } elseif ($request->sortBy && $request->order) {
                 $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->orderBy($request->sortBy, $request->order)->paginate(10);
@@ -221,6 +232,16 @@ class UserServices
             } else {
                 throw new Exception('User Not Found.');
             }
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
+    public static function forgotPassword($request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|email',
+            ]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
