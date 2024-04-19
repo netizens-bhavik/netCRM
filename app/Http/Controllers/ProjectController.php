@@ -52,9 +52,9 @@ class ProjectController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function allProjectList(){
+    function allProjectList(Request $request){
         try {
-            $response = ProjectServices::allProjectList();
+            $response = ProjectServices::allProjectList($request);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);

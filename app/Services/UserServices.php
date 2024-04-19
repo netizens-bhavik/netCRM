@@ -177,19 +177,39 @@ class UserServices
             $user = User::find($userId);
             if ($user) {
 
-                $projects = Project::with('members.user','client','manageBy')
+                $projects = Project::with('members.user', 'client', 'manageBy')
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     })
                     ->Orwhere('manage_by', $user->id)->get()->toArray();
 
-                $tasks = Task::with('members.user','project','manageBy')
+                $tasks = Task::with('members.user', 'project', 'manageBy')
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     })
                     ->Orwhere('manage_by', $user->id)->get()->toArray();
                 $response = ['status' => 'Success', 'data' => ['user' => $user, 'Project' => $projects, 'task' => $tasks]];
                 return response()->json($response);
+            } else {
+                throw new Exception('User Not Found.');
+            }
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
+    public static function resetPassword($request, $userId)
+    {
+        try {
+            $user = User::find($userId);
+            if ($user) {
+                if ($request->currunt_password) {
+                    if (Hash::check($request->currunt_password, $user->password)) {
+                        $password = Hash::make($request->password);
+                        $user->update(['password' => $password]);
+                    } else {
+                        throw new Exception('Currunt Password is incorrect');
+                    }
+                }
             } else {
                 throw new Exception('User Not Found.');
             }
