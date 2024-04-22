@@ -29,7 +29,7 @@ class UserServices
         try {
             $users = User::withoutRole('super-admin')->get();
             if ($request->project_id) {
-                $users = DB::select('select u.*  from project_has_members as pm join users as u on u.id = pm.user_id where pm.project_id = "'.$request->project_id.'"');
+                $users = DB::select('select u.*  from project_has_members as pm join users as u on u.id = pm.user_id where pm.project_id = "' . $request->project_id . '"');
             }
             $response = ['status' => 'Success', 'data' => $users];
             return response()->json($response);
@@ -190,8 +190,15 @@ class UserServices
         try {
             $user = User::find($userId);
             if ($user) {
-                $roles = $user->getRoleNames();
-                $user['role'] = $roles;
+                $userRole = $user->getRoleNames();
+                $user['role'] = $userRole;
+                $roleList = Role::roles;
+                foreach ($roleList as $key => $value) {
+                    // dd($userRole[0], $key, $value);
+                    if ($userRole[0] == $key) {
+                        $user['role'] = ['value' => $key, 'label' => $value];
+                    }
+                }
                 $projects = Project::with('members.user', 'client', 'manageBy')
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);

@@ -33,7 +33,7 @@ class ClientRequest extends FormRequest
             // 'phone_no' => ['required','regex:/(01)[0-9]{9}/'],
             'phone_no' => ['required','integer','digits:10'],
             'company_name' => ['required'],
-            'company_website' => ['url'],
+            'company_website' => ['nullable','url'],
             'company_address' => ['required'],
             'company_logo' => ['required','extensions:png,jpg,jpeg'],
             // 'tax' => ['required'],
