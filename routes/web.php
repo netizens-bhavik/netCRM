@@ -1,10 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\TaskController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,3 +35,12 @@ Route::post('task-store',[TaskController::class,'store']);
 Route::any('get-states/{countryId}',[HomeController::class,'getStates']);
 Route::any('get-cities/{stateId}',[HomeController::class,'getCities']);
 
+
+Route::get('migrate-command',function(){
+    Artisan::call('migrate');
+    dd("migrated.");
+});
+Route::get('optimize-clear-command',function(){
+    Artisan::call('optimize:clear');
+    dd("optimize cleared.");
+});

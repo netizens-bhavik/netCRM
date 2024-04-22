@@ -18,7 +18,8 @@ class TaskObserver
             'description' => $task->name,
             'user_id' => $task->manage_by
         ]);
-        Log::info($task);
+
+        Log::info($task->id);
     }
 
     /**

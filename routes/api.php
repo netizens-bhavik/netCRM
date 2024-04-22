@@ -89,5 +89,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('all-Notification',[NotificationController::class,'index']);
     Route::post('create-notification',[NotificationController::class,'create']);
 
-
 });
