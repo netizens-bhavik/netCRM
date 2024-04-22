@@ -186,8 +186,7 @@ class ProjectServices
     public static function projectFind($projectId, $request)
     {
         try {
-            $project = Project::with('client', 'manageBy', 'members.user', 'tasks.members.user')->find($projectId);
-
+            $project = Project::with('client', 'manageBy', 'members.user', 'tasks.members.user')->has('members.user')->find($projectId);
             if ($project) {
                 $project->members->each(function ($member) {
                     $firstRole = $member->user->roles->first();
@@ -235,7 +234,7 @@ class ProjectServices
             }elseif ($request->sortBy && $request->order) {
                 $projects = Project::with('client', 'manageBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $projects = Project::with('client', 'manageBy', 'members.user')->paginate(10);
+                $projects = Project::with('client', 'manageBy', 'members.user')->has('members.user')->paginate(10);
             }
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {

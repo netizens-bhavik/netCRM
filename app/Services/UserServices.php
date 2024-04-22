@@ -176,7 +176,7 @@ class UserServices
                 $role = ['value' => $firstRole ? $firstRole->name : null, 'label' => $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null];
                 // $user->rolesName = $firstRole ? $firstRole->name : null;
                 // $user->rolesLabel = $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null;
-                $user->roleNmae = $role;
+                $user->roleName = $role;
                 unset($user->roles);
             });
             $response = ['status' => 'Success', 'data' => $nonAdminUsers];

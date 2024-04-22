@@ -110,9 +110,14 @@ class TaskServices
                     'voice_memo' => $myimage,
                     'manage_by' => Auth::id()
                 ]);
-                TaskHasMembers::where('task_id', $taskId)->delete();
+                // TaskHasMembers::where('task_id', $taskId)->delete();
+                // $task->members()->delete();
                 foreach ($request->task_members as $key => $value) {
-                    TaskHasMembers::create(['id' => Str::uuid(), 'task_id' => $task->id, 'user_id' => $value]);
+                    $arr = [
+                        'task_id' => $task->id,
+                        'user_id' => $value
+                    ];
+                    TaskHasMembers::updateOrCreate(['user_id' => $value],$arr);
                 }
                 return response()->json(['status' => 'success', 'message' => 'Task Update Successfully.']);
             } else {
