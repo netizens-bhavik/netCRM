@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectHasMembersController;
 use App\Http\Controllers\TaskController;
@@ -82,5 +83,11 @@ Route::middleware('auth:sanctum')->group(function () {
     //all projectList of user with pagination
     Route::get('user-projects/{userId}',[ProjectController::class,'userProject']);
     Route::get('user-Tasks/{userId}',[TaskController::class,'userTask']);
+
+
+    //Notifications
+    Route::get('all-Notification',[NotificationController::class,'index']);
+    Route::post('create-notification',[NotificationController::class,'create']);
+
 
 });

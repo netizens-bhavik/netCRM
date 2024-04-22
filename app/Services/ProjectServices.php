@@ -307,7 +307,7 @@ class ProjectServices
             $query->where('name', 'like', '%' . $searchTerm . '%');
         }
 
-        if ($request->has('sortBy') && $request->has('order')) {
+        if ($request->has('sortBy') && $request->has('order') && !empty($request->sortBy) && !empty($request->order)) {
             $sortBy = $request->sortBy;
             $order = $request->order;
             $query->orderBy($sortBy, $order);
