@@ -36,8 +36,12 @@ Route::any('get-states/{countryId}',[HomeController::class,'getStates']);
 Route::any('get-cities/{stateId}',[HomeController::class,'getCities']);
 
 
-Route::get('migrate-command',function(){
+Route::get('migrate-fresh-command',function(){
     Artisan::call('migrate:fresh --seed');
+    return ("migrated.");
+});
+Route::get('migrate-command',function(){
+    Artisan::call('migrate');
     return ("migrated.");
 });
 Route::get('optimize-clear-command',function(){
