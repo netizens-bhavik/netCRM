@@ -186,7 +186,7 @@ class ProjectServices
     public static function projectFind($projectId, $request)
     {
         try {
-            $project = Project::with('client', 'manageBy', 'members.user', 'tasks.members.user')->has('members.user')->find($projectId);
+            $project = Project::with('client', 'manageBy', 'members.user', 'tasks.members.user')->has('members.user','tasks.members.user')->find($projectId);
             if ($project) {
                 $project->members->each(function ($member) {
                     $firstRole = $member->user->roles->first();

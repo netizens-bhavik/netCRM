@@ -37,10 +37,10 @@ Route::any('get-cities/{stateId}',[HomeController::class,'getCities']);
 
 
 Route::get('migrate-command',function(){
-    Artisan::call('migrate');
-    dd("migrated.");
+    Artisan::call('migrate:fresh --seed');
+    return ("migrated.");
 });
 Route::get('optimize-clear-command',function(){
     Artisan::call('optimize:clear');
-    dd("optimize cleared.");
+    return ("optimize cleared.");
 });

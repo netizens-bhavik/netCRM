@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('task_has_members', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('task_id');
-            $table->foreign('task_id')->references('id')->on('tasks');
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
