@@ -302,7 +302,7 @@ class ClientServices
             } elseif ($request->sortBy && $request->order) {
                 $clients = Client::with('country', 'state', 'city')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $clients = Client::with('country', 'state', 'city')->paginate(10);
+                $clients = Client::latest()->with('country', 'state', 'city')->paginate(10);
             }
 
             return response()->json(['status' => 'success', 'data' => $clients], 200);

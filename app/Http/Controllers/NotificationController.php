@@ -9,10 +9,10 @@ use App\Traits\ApiResponses;
 
 class NotificationController extends Controller
 {
-    function index()
+    function index($userId)
     {
         try {
-            $response = NotificationServices::index();
+            $response = NotificationServices::index($userId);
             return $response;
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);

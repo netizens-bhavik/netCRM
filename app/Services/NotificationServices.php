@@ -14,10 +14,10 @@ class NotificationServices
     {
         //
     }
-    public static function index()
+    public static function index($userId)
     {
         try {
-            $data = Notification::all();
+            $data = Notification::where('user_id',$userId)->where('is_read',false)->get();
             $response = ['status' => 'success', 'data' => $data];
             return response()->json($response, 200);
         } catch (\Throwable $th) {

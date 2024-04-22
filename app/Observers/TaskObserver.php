@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Task;
 use Illuminate\Support\Facades\Log;
 use App\Models\Notification;
+use App\Models\TaskHasMembers;
 
 class TaskObserver
 {
@@ -18,8 +19,6 @@ class TaskObserver
             'description' => $task->name,
             'user_id' => $task->manage_by
         ]);
-
-        Log::info($task->id);
     }
 
     /**

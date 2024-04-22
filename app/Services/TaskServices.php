@@ -186,7 +186,7 @@ class TaskServices
             } elseif ($request->sortBy && $request->order) {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $tasks = Task::with('project', 'members.user', 'manageBy')->paginate(10);
+                $tasks = Task::latest()->with('project', 'members.user', 'manageBy')->paginate(10);
             }
             return response()->json(['status' => 'success', 'data' => $tasks], 200);
         } catch (\Throwable $th) {

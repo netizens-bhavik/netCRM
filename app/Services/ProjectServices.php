@@ -295,7 +295,7 @@ class ProjectServices
 {
     try {
         $user = User::find($userId);
-        $query = Project::with('members.user', 'client', 'manageBy')
+        $query = Project::latest()->with('members.user', 'client', 'manageBy')
                         ->where(function ($query) use ($user) {
                             $query->whereHas('members', function ($q) use ($user) {
                                 $q->where('user_id', $user->id);
