@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,SoftDeletes,HasApiTokens,HasRoles,HasUuids;
+    use HasFactory, Notifiable,HasApiTokens,HasRoles,HasUuids;
 
     /**
      * The attributes that are mass assignable.

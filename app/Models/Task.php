@@ -15,7 +15,7 @@ use App\Observers\TaskObserver;
 #[ObservedBy([TaskObserver::class])]
 class Task extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'id', 'name', 'project_id', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo', 'manage_by'

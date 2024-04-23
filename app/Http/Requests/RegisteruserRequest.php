@@ -24,7 +24,7 @@ class RegisteruserRequest extends FormRequest
         return [
             'name' => 'required',
             'avtar' => 'nullable|image',
-            'email' => 'required|email|unique:users,email,NULL,id,deleted_at,NULL',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'phone_no' => 'nullable',
             'date_of_birth' => 'nullable',

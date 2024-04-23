@@ -18,12 +18,12 @@ return new class extends Migration
             $table->uuid('manage_by');
             $table->foreign('manage_by')->references('id')->on('users')->onDelete('cascade');
             $table->string('name');
-            $table->date('start_date');
-            $table->date('deadline');
-            $table->longText('summary');
+            $table->date('start_date')->nullable();
+            $table->date('deadline')->nullable();
+            $table->longText('summary')->nullable();
             $table->string('currency')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+            // $table->softDeletes();
         });
     }
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model
 {
-    use HasFactory,SoftDeletes,HasUuids;
+    use HasFactory,HasUuids;
 
     protected $fillable = [
         'id',

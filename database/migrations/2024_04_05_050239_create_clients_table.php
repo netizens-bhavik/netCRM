@@ -16,27 +16,27 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->string('avtar')->nullable();
-            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
-            $table->unsignedBigInteger('state_id');
+            $table->unsignedBigInteger('state_id')->nullable();
             $table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
-            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
-            $table->string('zipcode');
-            $table->string('phone_no');
-            $table->string('company_name');
+            $table->string('zipcode')->nullable();
+            $table->string('phone_no')->nullable();
+            $table->string('company_name')->nullable();
             $table->string('company_website')->nullable();
-            $table->string('company_address');
-            $table->string('company_logo');
+            $table->string('company_address')->nullable();
+            $table->string('company_logo')->nullable();
             $table->string('tax')->nullable();
             $table->string('gst_vat')->nullable();
-            $table->string('office_mobile');
+            $table->string('office_mobile')->nullable();
             $table->string('address')->nullable();
-            $table->uuid('added_by');
+            $table->uuid('added_by')->nullable();
             $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->string('note')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+            // $table->softDeletes();
         });
     }
 

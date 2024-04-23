@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 #[ObservedBy([TaskHasMembersObserver::class])]
 class TaskHasMembers extends Model
 {
-    use HasFactory,SoftDeletes,HasUuids;
+    use HasFactory,HasUuids;
     protected $fillable = [
         'id','task_id','user_id',
     ];
