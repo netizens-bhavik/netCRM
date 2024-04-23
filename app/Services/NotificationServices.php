@@ -25,7 +25,18 @@ class NotificationServices
             return response()->json($res);
         }
     }
-
+public static function markAsRead($request){
+    try {
+        // $userId = $request->userId;
+        $notificationIds = $request->notificationIds;
+        foreach ($notificationIds as $key => $noti) {
+            Notification::find($noti)->update(['is_read' => true,'read_at' => now()]);
+        }
+    } catch (\Throwable $th) {
+        $res = ['status' => 'error', 'message' => $th->getMessage()];
+        return response()->json($res);
+    }
+}
     public static function create($request)
     {
         try {

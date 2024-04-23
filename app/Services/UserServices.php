@@ -29,7 +29,14 @@ class UserServices
         try {
             $users = User::withoutRole('super-admin')->get();
             if ($request->project_id) {
-                $users = DB::select('select u.*  from project_has_members as pm join users as u on u.id = pm.user_id where pm.project_id = "' . $request->project_id . '"');
+                // $users = DB::select('select u.*  from project_has_members as pm join users as u on u.id = pm.user_id where pm.project_id = "' . $request->project_id . '"');
+                $users = DB::table('project_has_members as pm')
+                ->select('u.*') // Selecting all columns from the users table
+                ->leftJoin('users as u', 'u.id', '=', 'pm.user_id')
+                ->where('pm.project_id', $request->project_id)
+                ->get();
+
+
             }
             $response = ['status' => 'Success', 'data' => $users];
             return response()->json($response);
