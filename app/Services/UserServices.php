@@ -235,6 +235,8 @@ class UserServices
                         $password = Hash::make($request->password);
                         $user->update(['password' => $password]);
                         $response = ['status' => 'success', 'message' => 'Password Change Successfully.'];
+
+                        return response()->json($response);
                     } else {
                         throw new Exception('Currunt Password is incorrect');
                     }
