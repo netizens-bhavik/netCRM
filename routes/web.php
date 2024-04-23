@@ -35,7 +35,6 @@ Route::post('task-store',[TaskController::class,'store']);
 Route::any('get-states/{countryId}',[HomeController::class,'getStates']);
 Route::any('get-cities/{stateId}',[HomeController::class,'getCities']);
 
-
 Route::get('migrate-fresh-command',function(){
     Artisan::call('migrate:fresh --seed');
     return ("migrated.");

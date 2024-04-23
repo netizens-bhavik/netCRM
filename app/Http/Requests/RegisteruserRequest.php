@@ -23,14 +23,14 @@ class RegisteruserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'avtar' => 'required|image',
+            'avtar' => 'nullable|image',
             'email' => 'required|email|unique:users,email,NULL,id,deleted_at,NULL',
             'password' => 'required',
-            'phone_no' => 'required',
-            'date_of_birth' => 'required|date',
-            'gender' => 'required|in:female,male',
-            'date_of_join' => 'required|date',
-            'address' => 'required',
+            'phone_no' => 'nullable',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|in:female,male',
+            'date_of_join' => 'nullable|date',
+            'address' => 'nullable',
             'role' => 'required'
         ];
     }

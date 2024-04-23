@@ -25,6 +25,7 @@ class NotificationServices
             return response()->json($res);
         }
     }
+
     public static function create($request)
     {
         try {

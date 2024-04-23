@@ -38,7 +38,6 @@ class UserServices
         }
     }
 
-
     public static function show($request)
     {
         try {

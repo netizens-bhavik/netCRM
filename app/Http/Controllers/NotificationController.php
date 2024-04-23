@@ -18,6 +18,14 @@ class NotificationController extends Controller
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
+    function markAsRead(Request $request){
+        try {
+            $response = NotificationServices::markAsRead($request);
+            return $response;
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
     function create(CreateNotificationRequest $request){
         try {
             $response = NotificationServices::create($request);
