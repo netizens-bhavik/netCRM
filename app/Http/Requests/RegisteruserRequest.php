@@ -28,8 +28,8 @@ class RegisteruserRequest extends FormRequest
             'password' => 'required',
             'phone_no' => 'nullable',
             'date_of_birth' => 'nullable',
-            'gender' => 'nullable|in:female,male',
-            'date_of_join' => 'nullable|date',
+            'gender' => 'nullable',
+            'date_of_join' => 'nullable',
             'address' => 'nullable',
             'role' => 'required'
         ];
