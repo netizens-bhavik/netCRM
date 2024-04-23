@@ -90,7 +90,7 @@ class TaskServices
     {
         try {
             $task = Task::find($taskId);
-            if (isset($request->voice_memo)) {
+            if ($request->hasFile('voice_memo')) {
                 $destinationPath = 'voiceMemo';
                 $myimage = time() . $request->voice_memo->getClientOriginalName();
                 $request->voice_memo->move(public_path($destinationPath), $myimage);
