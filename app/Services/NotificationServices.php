@@ -17,7 +17,7 @@ class NotificationServices
     public static function index($userId)
     {
         try {
-            $data = Notification::with('user')->where('user_id',$userId)->where('is_read',false)->get();
+            $data = Notification::with('user')->where('user_id',$userId)->where('is_read',false)->latest()->get();
             $response = ['status' => 'success', 'data' => $data];
             return response()->json($response, 200);
         } catch (\Throwable $th) {
