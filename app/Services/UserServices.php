@@ -234,6 +234,7 @@ class UserServices
                     if (Hash::check($request->currunt_password, $user->password)) {
                         $password = Hash::make($request->password);
                         $user->update(['password' => $password]);
+                        $response = ['status' => 'success', 'message' => 'Password Change Successfully.'];
                     } else {
                         throw new Exception('Currunt Password is incorrect');
                     }
