@@ -126,11 +126,11 @@ class UserServices
                     'avtar' => $myimage,
                     'email' => $request->email,
                     'password' => $password,
-                    'phone_no' => $request->phone_no,
-                    'date_of_birth' => $request->date_of_birth,
-                    'gender' => $request->gender,
-                    'date_of_join' => $request->date_of_join,
-                    'address' => $request->address
+                    'phone_no' => $request->has('phone_no') ? $request->phone_no : null,
+                    'date_of_birth' => $request->has('date_of_birth') ? $request->date_of_birth : null,
+                    'gender' => $request->has('gender') ? $request->gender : null,
+                    'date_of_join' => $request->has('date_of_join') ? $request->date_of_join : null,
+                    'address' => $request->has('address') ? $request->address : null
                 ]);
                 $response = ['status' => 'success', 'message' => 'User Update Successfully.'];
                 return response()->json($response);
@@ -146,7 +146,7 @@ class UserServices
         try {
             $user = User::find($userId);
             if ($user) {
-                unlink('avatars/' . $user->avtar);
+                // unlink('avatars/' . $user->avtar);
                 $user->delete();
                 $response = ['status' => 'Success', 'message' => 'User Delete Successfully.'];
                 return response()->json($response);

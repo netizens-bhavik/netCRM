@@ -32,9 +32,9 @@ class UserUpdateRequest extends FormRequest
             'password' => 'min:6|required_with:password_confirmation|same:password_confirmation|different:currunt_password',
             'password_confirmation' => 'min:6',
             'phone_no' => 'nullable',
-            'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|in:female,male',
-            'date_of_join' => 'nullable|date',
+            'date_of_birth' => 'nullable',
+            'gender' => 'nullable',
+            'date_of_join' => 'nullable',
             'address' => 'nullable',
         ];
     }
