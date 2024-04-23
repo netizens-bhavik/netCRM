@@ -27,7 +27,7 @@ class RegisteruserRequest extends FormRequest
             'email' => 'required|email|unique:users,email,NULL,id,deleted_at,NULL',
             'password' => 'required',
             'phone_no' => 'nullable',
-            'date_of_birth' => 'nullable|date',
+            'date_of_birth' => 'nullable',
             'gender' => 'nullable|in:female,male',
             'date_of_join' => 'nullable|date',
             'address' => 'nullable',
