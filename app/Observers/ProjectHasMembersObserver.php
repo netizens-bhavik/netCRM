@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Project;
 use App\Models\Notification;
 use App\Models\ProjectHasMembers;
+use Illuminate\Support\Facades\Log;
 
 class ProjectHasMembersObserver
 {
@@ -20,6 +21,8 @@ class ProjectHasMembersObserver
             'refrence_id' => $projectHasMembers->project_id,
             'type' => 'project'
         ]);
+        Log::info('project notification Delete');
+
     }
 
     /**
@@ -36,6 +39,8 @@ class ProjectHasMembersObserver
     public function deleted(ProjectHasMembers $projectHasMembers): void
     {
         Notification::where('type','project')->where('refrence_id',$projectHasMembers->project_id)->delete();
+        Log::info('project notification Delete');
+
     }
 
     /**

@@ -37,7 +37,7 @@ class ProjectObserver
     public function deleted(Project $project): void
     {
         Notification::where('type','project')->where('refrence_id',$project->id)->delete();
-        Log::info('notification Delete');
+        Log::info('project notification Delete');
     }
 
     /**

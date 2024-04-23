@@ -21,6 +21,7 @@ class TaskHasMembersObserver
             'refrence_id' => $taskHasMembers->task_id,
             'type' => 'task'
         ]);
+        Log::info('Notification created' .$taskHasMembers);
     }
 
     /**
@@ -37,6 +38,7 @@ class TaskHasMembersObserver
     public function deleted(TaskHasMembers $taskHasMembers): void
     {
         Notification::where('type','task')->where('refrence_id',$taskHasMembers->task_id)->delete();
+        Log::info('task member notification deleted'.$taskHasMembers);
     }
 
     /**
