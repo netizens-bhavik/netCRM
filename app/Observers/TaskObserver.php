@@ -17,7 +17,9 @@ class TaskObserver
         $notification = Notification::create([
             'title' => 'Task Created',
             'description' => $task->name,
-            'user_id' => $task->manage_by
+            'user_id' => $task->manage_by,
+            'refrence_id' => $task->id,
+            'type' => 'task'
         ]);
     }
 
@@ -34,7 +36,8 @@ class TaskObserver
      */
     public function deleted(Task $task): void
     {
-        //
+        Notification::where('type','task')->where('refrence_id',$task->id)->delete();
+        Log::info('notification Delete');
     }
 
     /**

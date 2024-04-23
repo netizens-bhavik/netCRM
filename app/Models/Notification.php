@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Notification extends Model
 {
     use HasFactory;
-    protected $fillable = ['title','description','user_id','is_read','read_at'];
+    protected $fillable = ['title','description','user_id','is_read','read_at','refrence_id','type'];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id')->select(['id', 'name']);
