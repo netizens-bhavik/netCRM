@@ -22,6 +22,8 @@ class AuthServices
                 $destinationPath = 'avatars';
                 $myimage = time().$request->avtar->getClientOriginalName();
                 $request->avtar->move(public_path($destinationPath), $myimage);
+            }else{
+                $myimage= null;
             }
             $user = User::create([
                 'id' => Str::uuid(),
@@ -29,11 +31,11 @@ class AuthServices
                 'avtar' => $myimage,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'phone_no' => $request->phone_no,
-                'date_of_birth' => $request->date_of_birth,
-                'gender' => $request->gender,
-                'date_of_join' => $request->date_of_join,
-                'address' => $request->address,
+                'phone_no' => $request->has('phone_no') ? $request->phone_no : null,
+                'date_of_birth' => $request->has('date_of_birth') ? $request->date_of_birth : null,
+                'gender' => $request->has('gender') ? $request->gender : null,
+                'date_of_join' => $request->has('date_of_join') ? $request->date_of_join : null,
+                'address' => $request->has('address') ? $request->address : null,
             ]);
             $user->assignRole($request->role);
             return response()->json([
