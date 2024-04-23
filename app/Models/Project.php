@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ProjectObserver;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([ProjectObserver::class])]
 class Project extends Model
 {
     use HasFactory,HasUuids;

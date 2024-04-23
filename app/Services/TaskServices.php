@@ -110,7 +110,12 @@ class TaskServices
                     'voice_memo' => $myimage,
                     'manage_by' => Auth::id()
                 ]);
-                // TaskHasMembers::where('task_id', $taskId)->delete();
+                $allTaskMembers = TaskHasMembers::where('task_id', $task->id)->get();
+
+                foreach($allTaskMembers as $member){
+                    $member->delete();
+                }
+
                 // $task->members()->delete();
                 foreach ($request->task_members as $key => $value) {
                     $arr = [
