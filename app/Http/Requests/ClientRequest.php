@@ -24,7 +24,7 @@ class ClientRequest extends FormRequest
         return [
             'name' => ['required'],
             'email' => ['required','email'],
-            'avtar' => ['extensions:png,jpg,jpeg'],
+            // 'avtar' => ['extensions:png,jpg,jpeg'],
             'country_id' => ['required','integer'],
             // 'state_id' => ['integer'],
             // 'city_id' => ['integer'],
