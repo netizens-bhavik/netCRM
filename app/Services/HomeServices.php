@@ -26,23 +26,25 @@ class HomeServices
         try {
             $userid = Auth::id();
             // Task Count
-            $tasks = Task::where('manage_by', $userid);
-            $taskCount = $tasks->count();
-            $memberOfTasks = TaskHasMembers::where('user_id', $userid)->get(['task_id']);
-            $memberOfTaskCount = $memberOfTasks->count();
-            $_Taskcounts = ($taskCount + $memberOfTaskCount);
+
+            // $tasks = Task::where('manage_by', $userid);
+            // $taskCount = $tasks->count();
+            // $memberOfTasks = TaskHasMembers::where('user_id', $userid)->get(['task_id']);
+            // $memberOfTaskCount = $memberOfTasks->count();
+            // $_Taskcounts = ($taskCount + $memberOfTaskCount);
 
             //project Count
-            $projects = Project::where('manage_by', $userid);
-            $projectCount = $projects->count();
-            $memberOfProjects = ProjectHasMembers::where('user_id', $userid)->get(['project_id']);
-            $memberOfProjectCount = $memberOfProjects->count();
-            // dd($projectCount,$memberOfProjectCount);
-            $_projectcount = ($projectCount + $memberOfProjectCount);
-
+            // $projects = Project::where('manage_by', $userid);
+            // $projectCount = $projects->count();
+            // $memberOfProjects = ProjectHasMembers::where('user_id', $userid)->get(['project_id']);
+            // $memberOfProjectCount = $memberOfProjects->count();
+            // // dd($projectCount,$memberOfProjectCount);
+            // $_projectcount = ($projectCount + $memberOfProjectCount);
+            $taskCount = Task::count();
+            $_projectcount = Project::count();
             $clientsCount = Client::count();
             $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->count();
-            $res = ['status' => 'success', 'data' => ['tasks' => $_Taskcounts, 'projects' => $_projectcount,'client' => $clientsCount,'users' => $nonAdminUsers]];
+            $res = ['status' => 'success', 'data' => ['tasks' => $taskCount, 'projects' => $_projectcount,'client' => $clientsCount,'users' => $nonAdminUsers]];
             return response()->json($res);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
