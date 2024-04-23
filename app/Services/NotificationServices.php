@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Notification;
-
+use Exception;
 
 class NotificationServices
 {
@@ -29,10 +29,14 @@ public static function markAsRead($request){
     try {
         // $userId = $request->userId;
         $notificationIds = $request->notificationIds;
+        if(!empty($notificationIds)){
         foreach ($notificationIds as $key => $noti) {
             Notification::find($noti)->update(['is_read' => true,'read_at' => now()]);
         }
         return response()->json(['status' => 'success', 'message' => 'Notification updated Successfully.'], 200);
+    }else{
+        throw new Exception('Please Provide Notification IDs.');
+    }
     } catch (\Throwable $th) {
         $res = ['status' => 'error', 'message' => $th->getMessage()];
         return response()->json($res);

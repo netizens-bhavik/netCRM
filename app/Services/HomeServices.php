@@ -35,8 +35,9 @@ class HomeServices
             //project Count
             $projects = Project::where('manage_by', $userid);
             $projectCount = $projects->count();
-            $memberOfProjects = ProjectHasMembers::where('user_id', $userid);
+            $memberOfProjects = ProjectHasMembers::where('user_id', $userid)->get(['project_id']);
             $memberOfProjectCount = $memberOfProjects->count();
+            // dd($projectCount,$memberOfProjectCount);
             $_projectcount = ($projectCount + $memberOfProjectCount);
 
             $clientsCount = Client::count();

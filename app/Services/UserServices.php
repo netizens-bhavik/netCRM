@@ -154,7 +154,7 @@ class UserServices
             $user = User::find($userId);
             if ($user) {
                 $projects = Project::where('manage_by',$userId)->get();
-                if(isset($projects) && $projects->count() > 0){
+                if($projects->isNotEmpty()){
                     throw new Exception('This User Manage Few Projects. Soo You can not Delete this User.');
                 }
                 // unlink('avatars/' . $user->avtar);
