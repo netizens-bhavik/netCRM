@@ -114,6 +114,17 @@ class UserServices
                 } else {
                     $myimage = $user->avtar;
                 }
+                if($request->hasFile('adhar_image')){
+                    $destinationPath = 'adharImages';
+                    $myadhar = time().$request->adhar_image->getClientOriginalName();
+                    $request->adhar_image->move(public_path($destinationPath), $myadhar);
+
+                    if ($user->adhar_image && file_exists(public_path('adharImages/'.$user->adhar_image))) {
+                        unlink(public_path('adharImages/'.$user->adhar_image));
+                    }
+                }else{
+                    $myadhar = $user->adhar_image;
+                }
                 if ($request->currunt_password) {
                     if (Hash::check($request->currunt_password, $user->password)) {
                         $password = Hash::make($request->password);
@@ -137,7 +148,9 @@ class UserServices
                     'date_of_birth' => $request->has('date_of_birth') ? $request->date_of_birth : null,
                     'gender' => $request->has('gender') ? $request->gender : null,
                     'date_of_join' => $request->has('date_of_join') ? $request->date_of_join : null,
-                    'address' => $request->has('address') ? $request->address : null
+                    'address' => $request->has('address') ? $request->address : null,
+                    'adhar_image' => $myadhar
+
                 ]);
                 $response = ['status' => 'success', 'message' => 'User Update Successfully.'];
                 return response()->json($response);

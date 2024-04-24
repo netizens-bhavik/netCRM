@@ -36,6 +36,7 @@ class UserUpdateRequest extends FormRequest
             'gender' => 'nullable',
             'date_of_join' => 'nullable',
             'address' => 'nullable',
+            'adhar_image' => 'required|image'
         ];
     }
 }

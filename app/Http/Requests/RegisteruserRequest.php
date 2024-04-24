@@ -31,7 +31,8 @@ class RegisteruserRequest extends FormRequest
             'gender' => 'nullable',
             'date_of_join' => 'nullable',
             'address' => 'nullable',
-            'role' => 'required'
+            'role' => 'required',
+            'adhar_image' => 'required|image'
         ];
     }
 }

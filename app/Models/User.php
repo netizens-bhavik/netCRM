@@ -37,7 +37,8 @@ class User extends Authenticatable
         'gender',
         'date_of_join',
         'address',
-        'about'
+        'about',
+        'adhar_image'
     ];
 
     /**
