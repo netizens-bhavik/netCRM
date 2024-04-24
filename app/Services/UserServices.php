@@ -83,7 +83,7 @@ class UserServices
             if ($user) {
                 $data = [
                     'name' => $user->name,
-                    'avtar' => url('avatars/' . $user->avtar),
+                    'avtar' => $user->avtar,
                     'email' => $user->email,
                     'phone_no' => $user->phone_no,
                     'date_of_birth' => $user->date_of_birth,

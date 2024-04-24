@@ -12,6 +12,8 @@ class Role extends SpatieRole
     use HasFactory;
     use HasUuids;
     protected $primaryKey = 'id';
+    protected $fillable = ['name','label','guard_name'];
+    protected $hidden = ['guard_name'];
     public const roles = [
         'super-admin'=>'Super Admin',
         'admin' => 'Admin',

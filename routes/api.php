@@ -1,16 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\ProjectHasMembersController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\TaskHasMembersController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TaskHasMembersController;
+use App\Http\Controllers\ProjectHasMembersController;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
@@ -93,4 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //role
     Route::post('role-create',[RoleController::class,'create']);
+    Route::get('role-edit/{roleId}',[RoleController::class,'edit']);
+    Route::post('role-update/{roleId}',[RoleController::class,'update']);
+    // Route::delete('role-delete/{roleId}',[RoleController::class,'destroy']);
 });
