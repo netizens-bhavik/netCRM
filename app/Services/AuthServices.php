@@ -25,6 +25,13 @@ class AuthServices
             }else{
                 $myimage= null;
             }
+            if($request->hasFile('adhar_image')){
+                $destinationPath = 'adharImages';
+                $myadhar = time().$request->adhar_image->getClientOriginalName();
+                $request->adhar_image->move(public_path($destinationPath), $myadhar);
+            }else{
+                $myadhar = null;
+            }
             $user = User::create([
                 'id' => Str::uuid(),
                 'name' => $request->name,
@@ -36,6 +43,7 @@ class AuthServices
                 'gender' => $request->has('gender') ? $request->gender : null,
                 'date_of_join' => $request->has('date_of_join') ? $request->date_of_join : null,
                 'address' => $request->has('address') ? $request->address : null,
+                'adhar_image' => $myadhar
             ]);
             $user->assignRole($request->role);
             return response()->json([
