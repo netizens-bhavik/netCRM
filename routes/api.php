@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectHasMembersController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskHasMembersController;
 use App\Http\Controllers\UserController;
@@ -87,7 +88,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Notifications
     Route::get('notification/{userId}',[NotificationController::class,'index']);
-
     // Route::post('create-notification',[NotificationController::class,'create']);
     Route::post('notification-mark-as-read',[NotificationController::class,'markAsRead']);
+
+    //role
+    Route::post('role-create',[RoleController::class,'create']);
 });

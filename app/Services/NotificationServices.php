@@ -17,7 +17,7 @@ class NotificationServices
     public static function index($userId)
     {
         try {
-            $data = Notification::with('user')->where('user_id',$userId)->where('is_read',false)->latest()->get();
+            $data = Notification::with('user')->where('user_id', $userId)->where('is_read', false)->latest()->get();
             $response = ['status' => 'success', 'data' => $data];
             return response()->json($response, 200);
         } catch (\Throwable $th) {
@@ -25,23 +25,24 @@ class NotificationServices
             return response()->json($res);
         }
     }
-public static function markAsRead($request){
-    try {
-        // $userId = $request->userId;
-        $notificationIds = $request->notificationIds;
-        if(!empty($notificationIds)){
-        foreach ($notificationIds as $key => $noti) {
-            Notification::find($noti)->update(['is_read' => true,'read_at' => now()]);
+    public static function markAsRead($request)
+    {
+        try {
+            // $userId = $request->userId;
+            $notificationIds = $request->notificationIds;
+            if (!empty($notificationIds)) {
+                foreach ($notificationIds as $key => $noti) {
+                    Notification::find($noti)->update(['is_read' => true, 'read_at' => now()]);
+                }
+                return response()->json(['status' => 'success', 'message' => 'Notification updated Successfully.'], 200);
+            } else {
+                throw new Exception('Please Provide Notification IDs.');
+            }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
         }
-        return response()->json(['status' => 'success', 'message' => 'Notification updated Successfully.'], 200);
-    }else{
-        throw new Exception('Please Provide Notification IDs.');
     }
-    } catch (\Throwable $th) {
-        $res = ['status' => 'error', 'message' => $th->getMessage()];
-        return response()->json($res);
-    }
-}
     public static function create($request)
     {
         try {
@@ -51,11 +52,11 @@ public static function markAsRead($request){
                     $notification = Notification::create([
                         'title' => $request->title,
                         'description' => $request->description,
-                        'user_id' =>$user
+                        'user_id' => $user
                     ]);
                 }
                 $response = ['status' => 'success', 'message' => 'Notification Create Successfully.'];
-            return response()->json($response, 200);
+                return response()->json($response, 200);
             }
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
