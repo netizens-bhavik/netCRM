@@ -24,13 +24,21 @@ class TaskServices
     public static function createTask($request)
     {
         try {
-            if (isset($request->voice_memo)) {
+            if ($request->hasFile('voice_memo')) {
                 $destinationPath = 'voiceMemo';
                 $myimage = time() . $request->voice_memo->getClientOriginalName();
                 $request->voice_memo->move(public_path($destinationPath), $myimage);
                 // $voice_memo = $destinationPath . '/' . $myimage;
             } else {
                 $myimage = '';
+            }
+            if ($request->hasFile('document')) {
+                $destinationPath = 'document';
+                $mydoc = time() . $request->document->getClientOriginalName();
+                $request->document->move(public_path($destinationPath), $mydoc);
+                // $voice_memo = $destinationPath . '/' . $myimage;
+            } else {
+                $mydoc = null;
             }
             $task = Task::create([
                 'name' => $request->name,
@@ -41,7 +49,8 @@ class TaskServices
                 'priority' => $request->priority,
                 'status' => $request->status,
                 'voice_memo' => $myimage,
-                'manage_by' => Auth::id()
+                'manage_by' => Auth::id(),
+                'document' => $mydoc
             ]);
             foreach ($request->task_members as $key => $value) {
                 TaskHasMembers::create(['id' => Str::uuid(), 'task_id' => $task->id, 'user_id' => $value]);
@@ -98,6 +107,17 @@ class TaskServices
             } else {
                 $myimage = $task->voice_memo;
             }
+            if ($request->hasFile('document')) {
+                if ($task->document && file_exists(public_path('document/'.$task->document))) {
+                    unlink(public_path('document/'.$task->document));
+                }
+                $destinationPath = 'document';
+                $mydoc = time() . $request->document->getClientOriginalName();
+                $request->document->move(public_path($destinationPath), $mydoc);
+                // $voice_memo = $destinationPath . '/' . $myimage;
+            } else {
+                $mydoc = $task->document;
+            }
             if (!empty($task)) {
                 $task->update([
                     'name' => $request->name,
@@ -108,7 +128,8 @@ class TaskServices
                     'priority' => $request->priority,
                     'status' => $request->status,
                     'voice_memo' => $myimage,
-                    'manage_by' => Auth::id()
+                    'manage_by' => Auth::id(),
+                    'document' => $mydoc
                 ]);
                 $allTaskMembers = TaskHasMembers::where('task_id', $task->id)->get();
 
