@@ -1,8 +1,11 @@
 <?php
 
-namespace App\services;
+namespace App\Services;
 
+use Exception;
 use App\Models\Role;
+use App\Models\User;
+use Spatie\Permission\Exceptions\RoleHasUsersException;
 
 class RoleServices
 {
@@ -13,12 +16,68 @@ class RoleServices
     {
         //
     }
-    public static function create($request){
+    public static function create($request)
+    {
         try {
-            Role::create();
+            $roleName = strtolower($request->name);
+            $label = ucfirst($roleName);
+            $role =Role::create(['name' => $request->name, 'label' => $label]);
+            $role->givePermissionTo($request->permissions);
+            return response()->json(['status' => 'success', 'message' => 'Role Create Successfully.'], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
+        }
+    }
+    public static function edit($roleId)
+    {
+        try {
+            $role = Role::find($roleId);
+            if ($role) {
+                $permissions = $role->permissions()->get();
+                return response()->json(['status' => 'success', 'data' => ['role' => $role,'permission' => $permissions]]);
+            } else {
+                throw new Exception('Role Not Found');
+            }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function update($request, $roleId)
+    {
+        try {
+            $role = Role::find($roleId);
+            if ($role) {
+                $roleName = strtolower($request->name);
+                $label = ucfirst($roleName);
+                $role->update(['name' => $request->name, 'label' => $label]);
+                return response()->json(['status' => 'success', 'message' => 'Role Upadated Successfully.'], 200);
+            } else {
+                throw new Exception('Role Not Found');
+            }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function destroy($roleId)
+    {
+        try {
+            $role = Role::find($roleId);
+            if ($role) {
+                $users = User::role($role->name)->get();
+                if ($users->count() > 0) {
+                    throw new Exception('Cannot delete role. Users are assigned to this role.');
+                }
+                $role->delete();
+                return response()->json(['status' => 'success', 'message' => 'Role Delete Successfully.'], 200);
+            } else {
+                throw new Exception('Role Not Found');
+            }
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage() . $th->getFile() . $th->getLine()];
+            return response()->json($res, 500);
         }
     }
 }

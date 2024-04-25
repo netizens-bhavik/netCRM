@@ -1,16 +1,19 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\ProjectHasMembersController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\TaskHasMembersController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\TaskHasMembersController;
+use App\Http\Controllers\ProjectHasMembersController;
+use Twilio\Rest\Client;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
@@ -51,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-all-priorities', [TaskController::class, 'getAllPriorities']);
 
     Route::get('my-project',[ProjectController::class,'myProject']);
-    Route::get('my-task',[TaskController::class,'myTask']);
+    Route::get('my-task',[TaskController::class,'myT>ask']);
 
     //statastics
     Route::get('client-has-project/{clientId}',[ClientController::class,'clientHasProject']);
@@ -77,14 +80,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::any('all-states/{countryId}', [HomeController::class, 'getStates']);
     Route::any('all-cities/{stateId}', [HomeController::class, 'getCities']);
 
-    //Roles
-    Route::get('all-roles',[HomeController::class,'allRole']);
     //task status change
     Route::get('task-status-change/{taskId}/{status}',[TaskController::class,'statusChange']);
     //all projectList of user with pagination
     Route::get('user-projects/{userId}',[ProjectController::class,'userProject']);
     Route::get('user-Tasks/{userId}',[TaskController::class,'userTask']);
-
 
     //Notifications
     Route::get('notification/{userId}',[NotificationController::class,'index']);
@@ -92,5 +92,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('notification-mark-as-read',[NotificationController::class,'markAsRead']);
 
     //role
+    Route::get('all-roles',[HomeController::class,'allRole']);
     Route::post('role-create',[RoleController::class,'create']);
+    Route::get('role-edit/{roleId}',[RoleController::class,'edit']);
+    Route::post('role-update/{roleId}',[RoleController::class,'update']);
+    Route::delete('role-delete/{roleId}',[RoleController::class,'destroy']);
+
+    //permission
+    Route::get('all-permission',[PermissionController::class,'index']);
+
 });
