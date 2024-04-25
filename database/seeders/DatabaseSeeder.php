@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
     {
         Designation::create(['id'=> Str::uuid(),'name' => 'admin']);
         Department::create(['id'=> Str::uuid(),'name' => 'admin']);
+        foreach (Role::roles as $key => $role) {
+            $role = Role::create(['name' => $key, 'label' => $role]);
+        }
         $this->call([
             CountriesTableSeeder::class,
             StatesTableSeeder::class,
@@ -29,10 +32,8 @@ class DatabaseSeeder extends Seeder
             CitiesTableChunkThreeSeeder::class,
             CitiesTableChunkFourSeeder::class,
             CitiesTableChunkFiveSeeder::class,
+            PermissionSeeder::class,
         ]);
-        foreach (Role::roles as $key => $role) {
-            Role::create(['name' => $key]);
-        }
         $admin = User::create([
             'name' => 'Admin',
             'avtar' => 'admin.png',
