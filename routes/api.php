@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-all-priorities', [TaskController::class, 'getAllPriorities']);
 
     Route::get('my-project',[ProjectController::class,'myProject']);
-    Route::get('my-task',[TaskController::class,'myT>ask']);
+    Route::get('my-task',[TaskController::class,'myTask']);
 
     //statastics
     Route::get('client-has-project/{clientId}',[ClientController::class,'clientHasProject']);
@@ -93,6 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //role
     Route::get('all-roles',[HomeController::class,'allRole']);
+    Route::get('get-all-roles',[RoleController::class,'getAllRole']);
     Route::post('role-create',[RoleController::class,'create']);
     Route::get('role-edit/{roleId}',[RoleController::class,'edit']);
     Route::post('role-update/{roleId}',[RoleController::class,'update']);

@@ -31,9 +31,9 @@ class TaskCreateRequest extends FormRequest
             'priority'  => ['required','in:'.implode(',',Task::priority)],
             'status'  => ['required','in:'.implode(',',Task::status)],
             // 'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav,audio/wav'],
-            'voice_memo'  => ['required', 'extensions:wav,audio/wav'],
+            // 'voice_memo'  => ['required', 'extensions:wav,audio/wav'],
             'task_members' => ['required','array'],
-            'document' => ['nullable','file','mimes:jpeg,png,jpg,pdf','max:2048']
+            'document.*' => ['nullable','file','mimes:jpeg,png,jpg,pdf','max:2048']
         ];
     }
 }

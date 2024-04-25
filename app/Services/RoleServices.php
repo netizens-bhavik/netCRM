@@ -16,6 +16,15 @@ class RoleServices
     {
         //
     }
+    public static function index(){
+        try {
+            $roles = Role::paginate(10);
+            return response()->json(['status' => 'success', 'data' => $roles]);
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
     public static function create($request)
     {
         try {
@@ -52,6 +61,7 @@ class RoleServices
                 $roleName = strtolower($request->name);
                 $label = ucfirst($roleName);
                 $role->update(['name' => $request->name, 'label' => $label]);
+                $role->givePermissionTo($request->permissions);
                 return response()->json(['status' => 'success', 'message' => 'Role Upadated Successfully.'], 200);
             } else {
                 throw new Exception('Role Not Found');
