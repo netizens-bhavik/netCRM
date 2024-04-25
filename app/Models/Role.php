@@ -21,4 +21,10 @@ class Role extends SpatieRole
         'accountant' => 'Accountant',
         'business-person' => 'Businessperson'
     ];
+    public function delete()
+    {
+        return parent::delete();
+
+        dd($this);
+    }
 }

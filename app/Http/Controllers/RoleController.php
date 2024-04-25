@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\RoleServices;
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
@@ -35,11 +36,11 @@ class RoleController extends Controller
         }
     }
     function destroy($roleId){
-        try {
-            $response = RoleServices::destroy($roleId);
-            return $response;
-        } catch (\Throwable $th) {
-            return ApiResponses::errorResponse([], $th->getMessage(), 500);
-        }
+        // try {
+            return RoleServices::destroy($roleId);
+        // } catch (\Throwable $th) {
+        //     Log::info($th);
+        //     return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        // }
     }
 }

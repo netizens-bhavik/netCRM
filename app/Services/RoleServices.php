@@ -21,7 +21,8 @@ class RoleServices
         try {
             $roleName = strtolower($request->name);
             $label = ucfirst($roleName);
-            Role::create(['name' => $request->name, 'label' => $label]);
+            $role =Role::create(['name' => $request->name, 'label' => $label]);
+            $role->givePermissionTo($request->permissions);
             return response()->json(['status' => 'success', 'message' => 'Role Create Successfully.'], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
@@ -33,7 +34,8 @@ class RoleServices
         try {
             $role = Role::find($roleId);
             if ($role) {
-                return response()->json(['status' => 'success', 'data' => $role]);
+                $permissions = $role->permissions()->get();
+                return response()->json(['status' => 'success', 'data' => ['role' => $role,'permission' => $permissions]]);
             } else {
                 throw new Exception('Role Not Found');
             }
@@ -59,7 +61,8 @@ class RoleServices
             return response()->json($res);
         }
     }
-    public static function destroy($roleId){
+    public static function destroy($roleId)
+    {
         try {
             $role = Role::find($roleId);
             if ($role) {
@@ -67,15 +70,14 @@ class RoleServices
                 if ($users->count() > 0) {
                     throw new Exception('Cannot delete role. Users are assigned to this role.');
                 }
-                // $role->delete();
-                dd('sd');
+                $role->delete();
                 return response()->json(['status' => 'success', 'message' => 'Role Delete Successfully.'], 200);
             } else {
                 throw new Exception('Role Not Found');
             }
         } catch (\Throwable $th) {
-            $res = ['status' => 'error', 'message' => $th->getMessage().$th->getFile().$th->getLine()];
-            return response()->json($res,500);
+            $res = ['status' => 'error', 'message' => $th->getMessage() . $th->getFile() . $th->getLine()];
+            return response()->json($res, 500);
         }
     }
 }
