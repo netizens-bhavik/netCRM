@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\TaskHasDocument;
 use Illuminate\Support\Str;
 use App\Models\TaskHasMembers;
 use Illuminate\Support\Facades\Auth;
@@ -32,14 +33,6 @@ class TaskServices
             } else {
                 $myimage = '';
             }
-            if ($request->hasFile('document')) {
-                $destinationPath = 'document';
-                $mydoc = time() . $request->document->getClientOriginalName();
-                $request->document->move(public_path($destinationPath), $mydoc);
-                // $voice_memo = $destinationPath . '/' . $myimage;
-            } else {
-                $mydoc = null;
-            }
             $task = Task::create([
                 'name' => $request->name,
                 'project_id' => $request->project_id,
@@ -50,8 +43,19 @@ class TaskServices
                 'status' => $request->status,
                 'voice_memo' => $myimage,
                 'manage_by' => Auth::id(),
-                'document' => $mydoc
             ]);
+            $documents = $request->file('document');
+            if ($request->hasFile('document')) {
+                $destinationPath = 'document';
+                foreach ($documents as $doc) {
+                    $uniqueId = uniqid();$extension = $doc->getClientOriginalExtension();
+                    $mydoc = time() . '_' . $uniqueId . '.' . $extension;
+                    $doc->move(public_path($destinationPath), $mydoc);
+                    TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id]);
+                }
+            } else {
+                $mydoc = null;
+            }
             foreach ($request->task_members as $key => $value) {
                 TaskHasMembers::create(['id' => Str::uuid(), 'task_id' => $task->id, 'user_id' => $value]);
             }
@@ -108,8 +112,8 @@ class TaskServices
                 $myimage = $task->voice_memo;
             }
             if ($request->hasFile('document')) {
-                if ($task->document && file_exists(public_path('document/'.$task->document))) {
-                    unlink(public_path('document/'.$task->document));
+                if ($task->document && file_exists(public_path('document/' . $task->document))) {
+                    unlink(public_path('document/' . $task->document));
                 }
                 $destinationPath = 'document';
                 $mydoc = time() . $request->document->getClientOriginalName();
@@ -133,7 +137,7 @@ class TaskServices
                 ]);
                 $allTaskMembers = TaskHasMembers::where('task_id', $task->id)->get();
 
-                foreach($allTaskMembers as $member){
+                foreach ($allTaskMembers as $member) {
                     $member->delete();
                 }
 
@@ -143,7 +147,7 @@ class TaskServices
                         'task_id' => $task->id,
                         'user_id' => $value
                     ];
-                    TaskHasMembers::updateOrCreate(['user_id' => $value],$arr);
+                    TaskHasMembers::updateOrCreate(['user_id' => $value], $arr);
                 }
                 return response()->json(['status' => 'success', 'message' => 'Task Update Successfully.']);
             } else {
@@ -212,7 +216,7 @@ class TaskServices
         try {
             if ($request->search && $request->sortBy && $request->order) {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            }elseif($request->search){
+            } elseif ($request->search) {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
             } elseif ($request->sortBy && $request->order) {
                 $tasks = Task::with('project', 'members.user', 'manageBy')->orderBy($request->sortBy, $request->order)->paginate(10);
@@ -324,14 +328,14 @@ class TaskServices
                             $query->where('user_id', $user->id);
                         })
                         ->Orwhere('manage_by', $user->id)->paginate(10);
-                } elseif($request->search){
+                } elseif ($request->search) {
                     $tasks = Task::with('members.user', 'project', 'manageBy')
                         ->where('name', 'like', '%' . $request->search . '%')
                         ->whereHas('members', function ($query) use ($user) {
                             $query->where('user_id', $user->id);
                         })
                         ->Orwhere('manage_by', $user->id)->paginate(10);
-                }elseif ($request->sortBy && $request->order) {
+                } elseif ($request->sortBy && $request->order) {
                     $tasks = Task::with('members.user', 'project', 'manageBy')->orderBy($request->sortBy, $request->order)
                         ->whereHas('members', function ($query) use ($user) {
                             $query->where('user_id', $user->id);

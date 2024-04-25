@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
+    function getAllRole(){
+        try {
+            $response = RoleServices::index();
+            return $response;
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
     function create(CreateRoleRequest $request){
         try {
             $response = RoleServices::create($request);
