@@ -14,6 +14,7 @@ class Role extends SpatieRole
     protected $primaryKey = 'id';
     protected $fillable = ['name','label','guard_name'];
     protected $hidden = ['guard_name'];
+    protected $guard_name = 'sanctum';
     public const roles = [
         'super-admin'=>'Super Admin',
         'admin' => 'Admin',
