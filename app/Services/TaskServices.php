@@ -111,17 +111,17 @@ class TaskServices
             } else {
                 $myimage = $task->voice_memo;
             }
-            if ($request->hasFile('document')) {
-                if ($task->document && file_exists(public_path('document/' . $task->document))) {
-                    unlink(public_path('document/' . $task->document));
-                }
-                $destinationPath = 'document';
-                $mydoc = time() . $request->document->getClientOriginalName();
-                $request->document->move(public_path($destinationPath), $mydoc);
-                // $voice_memo = $destinationPath . '/' . $myimage;
-            } else {
-                $mydoc = $task->document;
-            }
+            // if ($request->hasFile('document')) {
+            //     if ($task->document && file_exists(public_path('document/' . $task->document))) {
+            //         unlink(public_path('document/' . $task->document));
+            //     }
+            //     $destinationPath = 'document';
+            //     $mydoc = time() . $request->document->getClientOriginalName();
+            //     $request->document->move(public_path($destinationPath), $mydoc);
+            //     // $voice_memo = $destinationPath . '/' . $myimage;
+            // } else {
+            //     $mydoc = $task->document;
+            // }
             if (!empty($task)) {
                 $task->update([
                     'name' => $request->name,
@@ -133,10 +133,18 @@ class TaskServices
                     'status' => $request->status,
                     'voice_memo' => $myimage,
                     'manage_by' => Auth::id(),
-                    'document' => $mydoc
                 ]);
+                $documents = $request->file('document');
+                if ($request->hasFile('document')) {
+                    $destinationPath = 'document';
+                    foreach ($documents as $doc) {
+                        $uniqueId = uniqid();$extension = $doc->getClientOriginalExtension();
+                        $mydoc = time() . '_' . $uniqueId . '.' . $extension;
+                        $doc->move(public_path($destinationPath), $mydoc);
+                        TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id]);
+                    }
+                }
                 $allTaskMembers = TaskHasMembers::where('task_id', $task->id)->get();
-
                 foreach ($allTaskMembers as $member) {
                     $member->delete();
                 }

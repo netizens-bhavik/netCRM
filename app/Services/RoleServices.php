@@ -18,7 +18,7 @@ class RoleServices
     }
     public static function index(){
         try {
-            $roles = Role::paginate(10);
+            $roles = Role::with('permissions')->paginate(10);
             return response()->json(['status' => 'success', 'data' => $roles]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
