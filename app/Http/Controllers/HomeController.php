@@ -41,9 +41,9 @@ class HomeController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
-    function allRole(){
+    function topPerformers(){
         try {
-            $response = HomeServices::allRole();
+            $response = HomeServices::topPerformers();
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);

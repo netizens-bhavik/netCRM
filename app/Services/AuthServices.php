@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class AuthServices
 {
@@ -18,6 +19,7 @@ class AuthServices
     }
     public static function registerUser($request){
         try {
+            DB::beginTransaction();
             if ($request->avtar) {
                 $destinationPath = 'avatars';
                 $myimage = time().$request->avtar->getClientOriginalName();
@@ -46,12 +48,14 @@ class AuthServices
                 'adhar_image' => $myadhar
             ]);
             $user->assignRole($request->role);
+            DB::commit();
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()

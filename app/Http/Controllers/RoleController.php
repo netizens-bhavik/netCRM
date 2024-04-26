@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
+    function allRole(){
+        try {
+            $response = RoleServices::allRole();
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
     function getAllRole(){
         try {
             $response = RoleServices::index();

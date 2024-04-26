@@ -92,7 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('notification-mark-as-read',[NotificationController::class,'markAsRead']);
 
     //role
-    Route::get('all-roles',[HomeController::class,'allRole']);
+    Route::get('all-roles',[RoleController::class,'allRole']);
     Route::get('get-all-roles',[RoleController::class,'getAllRole']);
     Route::post('role-create',[RoleController::class,'create']);
     Route::get('role-edit/{roleId}',[RoleController::class,'edit']);
@@ -102,4 +102,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //permission
     Route::get('all-permission',[PermissionController::class,'index']);
 
+    //top performer
+    Route::get('top-performers',[HomeController::class,'topPerformers']);
 });

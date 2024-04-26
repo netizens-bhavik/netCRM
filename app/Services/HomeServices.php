@@ -81,19 +81,17 @@ class HomeServices
             return response()->json($res);
         }
     }
-    public static function allRole()
-    {
+
+    public static function topPerformers(){
         try {
-            $roles = Role::roles;
-            $data = [];
-            foreach ($roles  as $key => $role) {
-                $data[] = [
-                    'label' => $role,
-                    'value' => $key,
-                ];
-            }
-            // $data['roles'] = $data;
-            return response()->json(['status' => 'success', 'data' => $data], 200);
+            $topPerformers = User::withCount(['tasks' => function ($query) {
+                $query->where('status', 'Completed');
+            }])
+            ->having('tasks_count', '>', 0) // Only users with completed tasks
+            ->orderByDesc('tasks_count')
+            ->get();
+
+            return response()->json(['top_performers' => $topPerformers]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);

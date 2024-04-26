@@ -16,6 +16,24 @@ class RoleServices
     {
         //
     }
+    public static function allRole()
+    {
+        try {
+            $roles = Role::roles;
+            $data = [];
+            foreach ($roles  as $key => $role) {
+                $data[] = [
+                    'label' => $role,
+                    'value' => $key,
+                ];
+            }
+            // $data['roles'] = $data;
+            return response()->json(['status' => 'success', 'data' => $data], 200);
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
     public static function index(){
         try {
             $roles = Role::with('permissions')->paginate(10);
