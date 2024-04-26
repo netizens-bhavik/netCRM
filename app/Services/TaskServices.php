@@ -48,10 +48,11 @@ class TaskServices
             if ($request->hasFile('document')) {
                 $destinationPath = 'document';
                 foreach ($documents as $doc) {
+                    $originalFileName = $doc->getClientOriginalName();
                     $uniqueId = uniqid();$extension = $doc->getClientOriginalExtension();
                     $mydoc = time() . '_' . $uniqueId . '.' . $extension;
                     $doc->move(public_path($destinationPath), $mydoc);
-                    TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id]);
+                    TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id,'original_document_name'=>$originalFileName]);
                 }
             } else {
                 $mydoc = null;
@@ -138,10 +139,11 @@ class TaskServices
                 if ($request->hasFile('document')) {
                     $destinationPath = 'document';
                     foreach ($documents as $doc) {
+                        $originalFileName = $doc->getClientOriginalName();
                         $uniqueId = uniqid();$extension = $doc->getClientOriginalExtension();
                         $mydoc = time() . '_' . $uniqueId . '.' . $extension;
                         $doc->move(public_path($destinationPath), $mydoc);
-                        TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id]);
+                        TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id,'original_document_name'=>$originalFileName]);
                     }
                 }
                 $allTaskMembers = TaskHasMembers::where('task_id', $task->id)->get();
