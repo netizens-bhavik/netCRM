@@ -50,7 +50,7 @@ class UserServices
         try {
             $user = User::find($request->user()->id);
             $roles = $user->getRoleNames();
-            $permissionNames = $user->getPermissionsViaRoles();
+            $permissionNames = $user->getPermissionsViaRoles()->pluck('name');
             if ($user) {
                 $data = [
                     'id' => $user->id,
@@ -64,7 +64,7 @@ class UserServices
                     'address' => $user->address,
                     'about' => $user->about,
                     'role' => $roles[0],
-                    'permission' => $permissionNames
+                    'permission' => $permissionNames->toArray()
                 ];
                 return response()->json(['staus' => true, 'data' => $data], 200);
             } else {
