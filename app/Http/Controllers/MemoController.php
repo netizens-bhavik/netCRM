@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMemoRequest;
+use App\Http\Requests\UpdateMemoRequest;
 use App\Models\Memo;
 use App\Services\MemoServices;
 use Illuminate\Http\Request;
@@ -56,15 +57,25 @@ class MemoController extends Controller
      */
     public function edit(Memo $memo)
     {
-        //
+        try {
+            $response = MemoServices::edit($memo);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Memo $memo)
+    public function update(UpdateMemoRequest $request, Memo $memo)
     {
-        //
+        try {
+            $response = MemoServices::update($request,$memo);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
     }
 
     /**
