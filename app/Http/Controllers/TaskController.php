@@ -131,4 +131,12 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
+    function deleteTaskDocument($documentId){
+        try {
+            $response = TaskServices::deleteTaskDocument($documentId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
 }
