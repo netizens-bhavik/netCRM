@@ -12,4 +12,5 @@ class Permission extends SpatiePermission
     use HasUuids;
     protected $primaryKey = 'id';
     protected $guard_name = 'sanctum';
+    protected $visible = ['id', 'name'];
 }

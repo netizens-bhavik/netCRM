@@ -50,7 +50,7 @@ class UserServices
         try {
             $user = User::find($request->user()->id);
             $roles = $user->getRoleNames();
-            $permissionNames = $user->getPermissionNames();
+            $permissionNames = $user->getPermissionsViaRoles();
             if ($user) {
                 $data = [
                     'id' => $user->id,

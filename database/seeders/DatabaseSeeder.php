@@ -3,14 +3,15 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Department;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Designation;
 use App\Models\Role;
+use App\Models\User;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Department;
+use App\Models\Permission;
+use App\Models\Designation;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,8 +20,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Designation::create(['id'=> Str::uuid(),'name' => 'admin']);
-        Department::create(['id'=> Str::uuid(),'name' => 'admin']);
+        Designation::create(['id' => Str::uuid(), 'name' => 'admin']);
+        Department::create(['id' => Str::uuid(), 'name' => 'admin']);
         foreach (Role::roles as $key => $role) {
             $role = Role::create(['name' => $key, 'label' => $role]);
         }
@@ -34,6 +35,11 @@ class DatabaseSeeder extends Seeder
             CitiesTableChunkFiveSeeder::class,
             PermissionSeeder::class,
         ]);
+        $superAdminRole = Role::where('name', 'super-admin')->first();
+        $permissions = Permission::all();
+        $superAdminRole->syncPermissions($permissions);
+
+
         $admin = User::create([
             'name' => 'Admin',
             'avtar' => 'admin.png',
