@@ -68,10 +68,10 @@ class MemoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMemoRequest $request, Memo $memo)
+    public function update(UpdateMemoRequest $request, $memoId)
     {
         try {
-            $response = MemoServices::update($request,$memo);
+            $response = MemoServices::update($request,$memoId);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
@@ -83,6 +83,11 @@ class MemoController extends Controller
      */
     public function destroy(Memo $memo)
     {
-        //
+        try {
+            $response = MemoServices::destroy($memo);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
     }
 }

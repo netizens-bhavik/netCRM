@@ -107,5 +107,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('top-performers',[HomeController::class,'topPerformers']);
 
     //Memo
-    Route::resource('memo', MemoController::class);
+    Route::resource('memo', MemoController::class)->except(['show','update']);
+    Route::post('memo/{memoId}',[MemoController::class,'update']);
 });

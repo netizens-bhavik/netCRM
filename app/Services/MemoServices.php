@@ -45,11 +45,21 @@ class MemoServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    public static function update($request,$memo){
+    public static function update($request,$memoId){
         try {
-            //code...
+            $memo = Memo::find($memoId);
+            $memo->update(['title' => $request->title,'description' => $request->description]);
+            return response()->json(['status' => 'success','message' => 'Memo Update Successfully.']);
         } catch (\Throwable $th) {
-            //throw $th;
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
+    public static function destroy($memo){
+        try {
+            $memo->delete();
+            return response()->json(['status' => 'success','message' => 'Memo Delete Successfully.']);
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
 }
