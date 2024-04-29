@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TaskHasDocument extends Model
 {
     use HasFactory,HasUuids;
-    protected $fillable = ['document','task_id',,'original_document_name'];
+    protected $fillable = ['document','task_id','original_document_name'];
     protected $visible = ['id', 'document','task_id','original_document_name'];
- 
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id')->select(['id','name','avtar'])->with('roles:name');
