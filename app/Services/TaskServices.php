@@ -48,10 +48,11 @@ class TaskServices
             if ($request->hasFile('document')) {
                 $destinationPath = 'document';
                 foreach ($documents as $doc) {
+                    $originalFileName = $doc->getClientOriginalName();
                     $uniqueId = uniqid();$extension = $doc->getClientOriginalExtension();
                     $mydoc = time() . '_' . $uniqueId . '.' . $extension;
                     $doc->move(public_path($destinationPath), $mydoc);
-                    TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id]);
+                    TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id,'original_document_name'=>$originalFileName]);
                 }
             } else {
                 $mydoc = null;
@@ -138,10 +139,11 @@ class TaskServices
                 if ($request->hasFile('document')) {
                     $destinationPath = 'document';
                     foreach ($documents as $doc) {
+                        $originalFileName = $doc->getClientOriginalName();
                         $uniqueId = uniqid();$extension = $doc->getClientOriginalExtension();
                         $mydoc = time() . '_' . $uniqueId . '.' . $extension;
                         $doc->move(public_path($destinationPath), $mydoc);
-                        TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id]);
+                        TaskHasDocument::create(['document' => $mydoc,'task_id' => $task->id,'original_document_name'=>$originalFileName]);
                     }
                 }
                 $allTaskMembers = TaskHasMembers::where('task_id', $task->id)->get();
@@ -223,13 +225,13 @@ class TaskServices
     {
         try {
             if ($request->search && $request->sortBy && $request->order) {
-                $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $tasks = Task::with('project', 'members.user', 'manageBy','documents')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
             } elseif ($request->search) {
-                $tasks = Task::with('project', 'members.user', 'manageBy')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
+                $tasks = Task::with('project', 'members.user', 'manageBy','documents')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
             } elseif ($request->sortBy && $request->order) {
-                $tasks = Task::with('project', 'members.user', 'manageBy')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $tasks = Task::with('project', 'members.user', 'manageBy','documents')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $tasks = Task::latest()->with('project', 'members.user', 'manageBy')->paginate(10);
+                $tasks = Task::latest()->with('project', 'members.user', 'manageBy','documents')->paginate(10);
             }
             return response()->json(['status' => 'success', 'data' => $tasks], 200);
         } catch (\Throwable $th) {
@@ -361,6 +363,20 @@ class TaskServices
             }
 
             return response()->json(['status' => 'success', 'data' => $tasks]);
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
+        }
+    }
+    public static function deleteTaskDocument($documentId){
+        try {
+            $doc = TaskHasDocument::find($documentId);
+            if ($doc) {
+                $doc->delete();
+                return response()->json(['status' => 'success', 'message' => 'Document Delete Successfully.']);
+            }else{
+                throw new Exception('Documnet Not Found.');
+            }
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);

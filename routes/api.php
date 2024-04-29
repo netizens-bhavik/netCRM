@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('task/edit/{taskId}', [TaskController::class, 'edit']);
     Route::post('task/update/{taskId}', [TaskController::class, 'update']);
     Route::delete('task/{taskId}/delete', [TaskController::class, 'destroy']);
+    //delete task Document
+    Route::delete('delete-task-document/{documentId}',[TaskController::class,'deleteTaskDocument']);
 
     Route::get('get-task-status', [TaskController::class, 'getTaskStatus']);
     Route::get('get-all-priorities', [TaskController::class, 'getAllPriorities']);

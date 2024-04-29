@@ -57,4 +57,13 @@ class Task extends Model
     {
         return $this->hasManyThrough(User::class, TaskHasMembers::class, 'task_id', 'id', 'id', 'user_id');
     }
+    /**
+     * Get all of the documents for the Task
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(TaskHasDocument::class);
+    }
 }
