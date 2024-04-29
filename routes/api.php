@@ -14,6 +14,8 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\TaskHasMembersController;
 use App\Http\Controllers\ProjectHasMembersController;
+use App\Http\Controllers\TaskHasCommentController;
+use App\Models\TaskHasComment;
 use Twilio\Rest\Client;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
@@ -111,4 +113,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //Memo
     Route::resource('memo', MemoController::class)->except(['show','update']);
     Route::post('memo/{memoId}',[MemoController::class,'update']);
+
+    Route::get('task-comment/{taskId}',[TaskHasCommentController::class,'index']);
+    Route::post('task-comment/{taskId}',[TaskHasCommentController::class,'store']);
+    Route::get('task-comment/{commentId}/edit',[TaskHasCommentController::class,'edit']);
+    Route::post('task-comment/{commentId}/update',[TaskHasCommentController::class,'update']);
+    Route::delete('task-comment/{commentId}',[TaskHasCommentController::class,'destroy']);
 });

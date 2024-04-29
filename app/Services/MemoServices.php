@@ -56,8 +56,12 @@ class MemoServices
     }
     public static function destroy($memo){
         try {
+            if($memo){
             $memo->delete();
             return response()->json(['status' => 'success','message' => 'Memo Delete Successfully.']);
+        }else{
+            throw new Exception('Memo not Found');
+        }
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
