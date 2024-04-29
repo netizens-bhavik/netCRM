@@ -8,6 +8,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\MemoController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PermissionController;
@@ -106,4 +107,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //top performer
     Route::get('top-performers',[HomeController::class,'topPerformers']);
+
+    //Memo
+    Route::resource('memo', MemoController::class)->except(['show','update']);
+    Route::post('memo/{memoId}',[MemoController::class,'update']);
 });
