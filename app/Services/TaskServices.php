@@ -287,7 +287,7 @@ class TaskServices
     public static function findTask($taskId)
     {
         try {
-            $task = Task::with('project', 'members.user', 'manageBy')->find($taskId);
+            $task = Task::with('project', 'members.user', 'manageBy','documents')->find($taskId);
             if ($task) {
                 $task->members->each(function ($member) {
                     $firstRole = $member->user->roles->first();
