@@ -9,9 +9,9 @@ use Illuminate\Http\Request;
 
 class TaskHasCommentController extends Controller
 {
-    function index(){
+    function index($taskId){
         try {
-            $response = TaskHasCommentServices::index();
+            $response = TaskHasCommentServices::index($taskId);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
@@ -44,6 +44,14 @@ class TaskHasCommentController extends Controller
     function destroy($commentId){
         try {
             $response = TaskHasCommentServices::destroy($commentId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
+    function getTaskComment($taskId){
+        try {
+            $response = TaskHasCommentServices::getTaskComment($taskId);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);

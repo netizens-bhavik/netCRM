@@ -119,4 +119,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('task-comment/{commentId}/edit',[TaskHasCommentController::class,'edit']);
     Route::post('task-comment/{commentId}/update',[TaskHasCommentController::class,'update']);
     Route::delete('task-comment/{commentId}',[TaskHasCommentController::class,'destroy']);
+    //without Pagination
+    Route::get('get-task-comment/{taskId}',[TaskHasCommentController::class,'getTaskComment']);
 });

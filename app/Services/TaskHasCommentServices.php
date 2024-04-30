@@ -16,10 +16,10 @@ class TaskHasCommentServices
     {
         //
     }
-    public static function index()
+    public static function index($taskId)
     {
         try {
-            $comments = TaskHasComment::with('user')->latest()->paginate(10);
+            $comments = TaskHasComment::with('user')->where('task_id',$taskId)->latest()->paginate(10);
             return response()->json(['status' => 'success', 'data' => $comments]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
@@ -73,6 +73,14 @@ class TaskHasCommentServices
                 throw new Exception('Comment Not Found');
             }
             return response()->json(['status' => 'success', 'message' => 'Comment Create Successfully.']);
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
+    public static function getTaskComment($taskId){
+        try {
+            $comments = TaskHasComment::with('user')->where('task_id',$taskId)->latest()->get();
+            return response()->json(['status' => 'success', 'data' => $comments]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
