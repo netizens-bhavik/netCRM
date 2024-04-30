@@ -289,14 +289,6 @@ class TaskServices
         try {
             $task = Task::with('project', 'members.user', 'manageBy','documents')->find($taskId);
             if ($task) {
-                $task->members->each(function ($member) {
-                    $firstRole = $member->user->roles->first();
-                    $roleName = $firstRole ? $firstRole->name : null;
-                    $label = $roleName ? Role::roles[$roleName] ?? $roleName : null;
-
-                    $member->user->roleName = ['value' => $roleName, 'label' => $label];
-                    unset($member->user->roles);
-                });
                 return response()->json(['status' => 'success', 'data' => $task]);
             } else {
                 throw new Exception('task Not Found');
