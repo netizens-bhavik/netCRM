@@ -19,7 +19,7 @@ class TaskHasCommentServices
     public static function index($taskId)
     {
         try {
-            $comments = TaskHasComment::with('user')->where('task_id',$taskId)->latest()->paginate(10);
+            $comments = TaskHasComment::with('user')->where('task_id', $taskId)->latest()->paginate(10);
             return response()->json(['status' => 'success', 'data' => $comments]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
@@ -48,7 +48,7 @@ class TaskHasCommentServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    public static function update($request,$commentId)
+    public static function update($request, $commentId)
     {
         try {
             $comment = TaskHasComment::find($commentId);
@@ -63,7 +63,8 @@ class TaskHasCommentServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    public static function destroy($commentId){
+    public static function destroy($commentId)
+    {
         try {
             $comment = TaskHasComment::find($commentId);
             if ($comment) {
@@ -77,9 +78,14 @@ class TaskHasCommentServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
-    public static function getTaskComment($taskId){
+    public static function getTaskComment($taskId)
+    {
         try {
-            $comments = TaskHasComment::with('user')->where('task_id',$taskId)->latest()->get();
+            $comments = TaskHasComment::with('user')
+                ->where('task_id', $taskId)
+                ->orderBy('updated_at', 'asc') // Ordering by 'updated_at' in ascending order
+                ->get();
+
             return response()->json(['status' => 'success', 'data' => $comments]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
