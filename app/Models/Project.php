@@ -52,7 +52,7 @@ class Project extends Model
      */
     public function manageBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'manage_by')->select(['id','name']);
+        return $this->belongsTo(User::class, 'manage_by')->select(['id','name'])->with('roles:name,label');
     }
     /**
      * Get all of the members for the Project

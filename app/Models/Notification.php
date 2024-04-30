@@ -13,6 +13,6 @@ class Notification extends Model
     protected $fillable = ['title','description','user_id','is_read','read_at','refrence_id','type'];
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id')->select(['id', 'name']);
+        return $this->belongsTo(User::class, 'user_id')->select(['id', 'name'])->with('roles:name,label');
     }
 }

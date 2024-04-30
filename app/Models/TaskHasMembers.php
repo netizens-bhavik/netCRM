@@ -18,6 +18,6 @@ class TaskHasMembers extends Model
     ];
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id')->select(['id','name','avtar'])->with('roles:name');
+        return $this->belongsTo(User::class, 'user_id', 'id')->select(['id','name','avtar'])->with('roles:name,label');
     }
 }

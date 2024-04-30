@@ -229,9 +229,9 @@ class ProjectServices
         try {
             if ($request->search && $request->sortBy && $request->order) {
                 $projects = Project::with('client', 'manageBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } elseif($request->search){
+            } elseif ($request->search) {
                 $projects = Project::with('client', 'manageBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
-            }elseif ($request->sortBy && $request->order) {
+            } elseif ($request->sortBy && $request->order) {
                 $projects = Project::with('client', 'manageBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
                 $projects = Project::with('client', 'manageBy', 'members.user')->has('members.user')->paginate(10);
@@ -291,34 +291,33 @@ class ProjectServices
         }
     }
     public static function userProject($request, $userId)
-{
-    try {
-        $user = User::find($userId);
-        $query = Project::latest()->with('members.user', 'client', 'manageBy')
-                        ->where(function ($query) use ($user) {
-                            $query->whereHas('members', function ($q) use ($user) {
-                                $q->where('user_id', $user->id);
-                            })
-                            ->orWhere('manage_by', $user->id);
-                        });
-        if ($request->has('search')) {
-            $searchTerm = $request->search;
-            $query->where('name', 'like', '%' . $searchTerm . '%');
+    {
+        try {
+            $user = User::find($userId);
+            $query = Project::latest()->with('members.user', 'client', 'manageBy')
+                ->where(function ($query) use ($user) {
+                    $query->whereHas('members', function ($q) use ($user) {
+                        $q->where('user_id', $user->id);
+                    })
+                        ->orWhere('manage_by', $user->id);
+                });
+            if ($request->has('search')) {
+                $searchTerm = $request->search;
+                $query->where('name', 'like', '%' . $searchTerm . '%');
+            }
+
+            if ($request->has('sortBy') && $request->has('order') && !empty($request->sortBy) && !empty($request->order)) {
+                $sortBy = $request->sortBy;
+                $order = $request->order;
+                $query->orderBy($sortBy, $order);
+            }
+
+            $projects = $query->paginate(10);
+
+            return response()->json(['status' => 'success', 'data' => $projects]);
+        } catch (\Throwable $th) {
+            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            return response()->json($res);
         }
-
-        if ($request->has('sortBy') && $request->has('order') && !empty($request->sortBy) && !empty($request->order)) {
-            $sortBy = $request->sortBy;
-            $order = $request->order;
-            $query->orderBy($sortBy, $order);
-        }
-
-        $projects = $query->paginate(10);
-
-        return response()->json(['status' => 'success', 'data' => $projects]);
-    } catch (\Throwable $th) {
-        $res = ['status' => 'error', 'message' => $th->getMessage()];
-        return response()->json($res);
     }
-}
-
 }
