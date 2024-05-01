@@ -29,12 +29,12 @@ class ProjectServices
             $project = Project::create([
                 'id' => Str::uuid(),
                 'client_id' => $request->client_id,
-                'manage_by' => $request->manage_by,
+                'manage_by' => $request->has('manage_by') ? $request->manage_by : null,
                 'name' => $request->name,
-                'start_date' => $request->start_date,
-                'deadline' => $request->deadline,
-                'summary' => $request->summary,
-                'currency' => $request->currency,
+                'start_date' => $request->has('start_date') ? $request->start_date : null,
+                'deadline' => $request->has('deadline') ? $request->deadline : null,
+                'summary' => $request->has('summary') ? $request->summary : null,
+                'currency' => $request->has('currency') ? $request->currency : null,
             ]);
             $project_members = $request->project_members;
             foreach ($project_members as $key => $member) {
@@ -100,12 +100,12 @@ class ProjectServices
             if (!empty($project)) {
                 $project->update([
                     'client_id' => $request->client_id,
-                    'manage_by' => $request->manage_by,
+                    'manage_by' => $request->has('manage_by') ? $request->manage_by : null,
                     'name' => $request->name,
-                    'start_date' => $request->start_date,
-                    'deadline' => $request->deadline,
-                    'summary' => $request->summary,
-                    'currency' => $request->currency,
+                    'start_date' => $request->has('start_date') ? $request->start_date : null,
+                    'deadline' => $request->has('deadline') ? $request->deadline : null,
+                    'summary' => $request->has('summary') ? $request->summary : null,
+                    'currency' => $request->has('currency') ? $request->currency : null,
                 ]);
                 $projectMembers = ProjectHasMembers::where('project_id', $projectId)->delete();
                 $project_members = $request->project_members;

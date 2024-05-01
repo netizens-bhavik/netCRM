@@ -21,11 +21,11 @@ class ProjectCreateRequest extends FormRequest
     {
         return [
             'client_id' => ['required'],
-            'manage_by' => ['required'],
+            'manage_by' => ['nullable'],
             'name' => ['required'],
             'start_date' => ['required','date'],
-            'deadline' => ['required','date'],
-            'summary' => ['required'],
+            'deadline' => ['nullable','date'],
+            'summary' => ['nullable'],
             // 'currency' => ['required'],
             'project_members' => ['required','array']
         ];
