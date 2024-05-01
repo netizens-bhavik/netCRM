@@ -375,4 +375,18 @@ class TaskServices
             return response()->json($res);
         }
     }
+    public static function deleteVoiceMemo($taskId){
+        try {
+            $task = Task::find($taskId);
+            if ($task) {
+                $task->update(['voice_memo' => null]);
+                return response()->json(['status' => 'success', 'message' => 'Voice Memo Remove Successfully.']);
+        }else{
+            throw new Exception('Task Not Found.');
+        }
+    } catch (\Throwable $th) {
+        $res = ['status' => 'error', 'message' => $th->getMessage()];
+        return response()->json($res);
+    }
+    }
 }

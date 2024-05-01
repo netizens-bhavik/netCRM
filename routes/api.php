@@ -55,6 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('task/{taskId}/delete', [TaskController::class, 'destroy']);
     //delete task Document
     Route::delete('delete-task-document/{documentId}',[TaskController::class,'deleteTaskDocument']);
+    //delete voice Memo
+    Route::delete('delete-voice-memo/{taskId}',[TaskController::class,'deleteVoiceMemo']);
 
     Route::get('get-task-status', [TaskController::class, 'getTaskStatus']);
     Route::get('get-all-priorities', [TaskController::class, 'getAllPriorities']);

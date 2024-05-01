@@ -139,4 +139,12 @@ class TaskController extends Controller
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
         }
     }
+    function deleteVoiceMemo($taskId){
+        try {
+            $response = TaskServices::deleteVoiceMemo($taskId);
+            return $response;
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'error' => $th->getMessage()]);
+        }
+    }
 }
