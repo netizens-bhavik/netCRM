@@ -234,7 +234,7 @@ class ProjectServices
             } elseif ($request->sortBy && $request->order) {
                 $projects = Project::with('client', 'manageBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $projects = Project::with('client', 'manageBy', 'members.user')->has('members.user')->paginate(10);
+                $projects = Project::with('client', 'manageBy', 'members.user')->has('members.user')->latest()->paginate(10);
             }
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {
