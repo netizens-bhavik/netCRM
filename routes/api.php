@@ -124,7 +124,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-task-comment/{taskId}',[TaskHasCommentController::class,'getTaskComment']);
 
     //Pushnotification
-    Route::post('store-devicetoken',[FirebaseNotificationController::class,'storeToken']);
+    Route::post('store-device-token',[FirebaseNotificationController::class,'storeToken']);
     Route::get('pushNotification',[FirebaseNotificationController::class,'sendNotification']);
 
 });
