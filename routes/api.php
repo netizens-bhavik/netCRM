@@ -126,4 +126,5 @@ Route::middleware('auth:sanctum')->group(function () {
     //Pushnotification
     Route::post('store-devicetoken',[FirebaseNotificationController::class,'storeToken']);
     Route::get('pushNotification',[FirebaseNotificationController::class,'sendNotification']);
+
 });
