@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDeviceTokenRequest;
 use App\Services\FirebaseNotificationService;
 use Illuminate\Http\Request;
 
 class FirebaseNotificationController extends Controller
 {
-    function index()
+    function storeToken(StoreDeviceTokenRequest $request)
     {
         try {
-            $response = FirebaseNotificationService::index();
+            $response = FirebaseNotificationService::storeToken($request);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);

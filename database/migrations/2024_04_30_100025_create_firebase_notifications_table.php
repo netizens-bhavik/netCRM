@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('firebase_notifications', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('body')->nullable();
             $table->string('device_token');
             $table->boolean('is_sent')->default(false);
