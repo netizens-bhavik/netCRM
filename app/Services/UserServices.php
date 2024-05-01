@@ -217,6 +217,7 @@ class UserServices
             if ($user) {
                 $roles = $user->roles;
                 $user['roleName'] = $roles;
+                unset($user['roles']);
                 // $userRole = $user->getRoleNames();
                 // $user['role'] = $userRole;
                 // $roleList = Role::roles;
