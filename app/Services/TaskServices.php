@@ -104,6 +104,7 @@ class TaskServices
     {
         try {
             $task = Task::find($taskId);
+            $myimage = null;
             if ($request->hasFile('voice_memo')) {
                 $destinationPath = 'voiceMemo';
                 $myimage = time() . $request->voice_memo->getClientOriginalName();
