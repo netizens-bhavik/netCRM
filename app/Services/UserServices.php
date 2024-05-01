@@ -215,16 +215,7 @@ class UserServices
         try {
             $user = User::find($userId);
             if ($user) {
-                $rolesArray = $user->roles->toArray();
-
-    // Convert the array to an object
-    $rolesObject = (object) $rolesArray;
-
-    // Assign the object to the roleName attribute
-    $user->roleName = $rolesObject;
-
-    // Unset the roles attribute
-    unset($user->roles);
+                $roles = $user->roles;
 
                 $projects = Project::with('members.user', 'client', 'manageBy')
                     ->whereHas('members', function ($query) use ($user) {
