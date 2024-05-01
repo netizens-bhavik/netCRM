@@ -8,6 +8,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FirebaseNotificationController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\NotificationController;
@@ -121,4 +122,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('task-comment/{commentId}',[TaskHasCommentController::class,'destroy']);
     //without Pagination
     Route::get('get-task-comment/{taskId}',[TaskHasCommentController::class,'getTaskComment']);
+
+    //Pushnotification
+    Route::post('store-devicetoken',[FirebaseNotificationController::class,'storeToken']);
+    Route::get('pushNotification',[FirebaseNotificationController::class,'sendNotification']);
+
 });
