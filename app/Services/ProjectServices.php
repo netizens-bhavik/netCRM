@@ -49,7 +49,7 @@ class ProjectServices
                 return redirect('project');
             }
         } catch (\Throwable $th) {
-            $res = ['status' => 'error', 'message' => $th->getMessage()];
+            $res = ['status' => 'error', 'message' => $th->getMessage().$th->getLine()];
             return response()->json($res);
         }
     }
