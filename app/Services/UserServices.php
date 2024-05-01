@@ -216,6 +216,7 @@ class UserServices
             $user = User::find($userId);
             if ($user) {
                 $roles = $user->roles;
+                $user['roleName'] = $roles;
                 // $userRole = $user->getRoleNames();
                 // $user['role'] = $userRole;
                 // $roleList = Role::roles;
