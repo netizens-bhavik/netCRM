@@ -215,18 +215,17 @@ class UserServices
         try {
             $user = User::find($userId);
             if ($user) {
-                $roles = $user->roles;
-                $user['roleName'] = $roles;
-                unset($user['roles']);
-                // $userRole = $user->getRoleNames();
-                // $user['role'] = $userRole;
-                // $roleList = Role::roles;
-                // foreach ($roleList as $key => $value) {
-                //     // dd($userRole[0], $key, $value);
-                //     if ($userRole[0] == $key) {
-                //         $user['role'] = ['value' => $key, 'label' => $value];
-                //     }
-                // }
+                $rolesArray = $user->roles->toArray();
+
+    // Convert the array to an object
+    $rolesObject = (object) $rolesArray;
+
+    // Assign the object to the roleName attribute
+    $user->roleName = $rolesObject;
+
+    // Unset the roles attribute
+    unset($user->roles);
+
                 $projects = Project::with('members.user', 'client', 'manageBy')
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
