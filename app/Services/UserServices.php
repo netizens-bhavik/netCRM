@@ -215,7 +215,9 @@ class UserServices
         try {
             $user = User::find($userId);
             if ($user) {
-                $roles = $user->roles;
+                $role = $user->roles->first();
+                $user->roleName = $role;
+                unset($user->roles);
 
                 $projects = Project::with('members.user', 'client', 'manageBy')
                     ->whereHas('members', function ($query) use ($user) {
