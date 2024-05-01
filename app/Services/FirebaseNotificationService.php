@@ -32,6 +32,7 @@ class FirebaseNotificationService
                 ->withToken($deviceToken);
 
             $messaging->send($message);
+
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
