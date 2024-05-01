@@ -9,5 +9,5 @@ class UserHasToken extends Model
 {
     use HasFactory;
     protected $table = "user_has_tokens";
-    protected $fillable = ['title','body','device_token','is_sent','user_id'];
+    protected $fillable = ['title','body','device_token','is_sent','user_id','device_id'];
 }
