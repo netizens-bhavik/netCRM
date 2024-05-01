@@ -22,7 +22,8 @@ class StoreDeviceTokenRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token' => ['required']
+            'token' => ['required'],
+            'device_id' => ['required']
         ];
     }
 }

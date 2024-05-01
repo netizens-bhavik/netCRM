@@ -18,16 +18,36 @@ class FirebaseNotificationService
         //
     }
     public static function storeToken($request)
-    {
-        try {
-            $notification = UserHasToken::create(['device_token' => $request->token, 'user_id' => Auth::id()]);
+{
+    try {
+        $user_id = Auth::id();
+        $device_id = $request->device_id;
+        $token = $request->token;
+
+        $existingToken = UserHasToken::where('user_id', $user_id)
+            ->where('device_id', $device_id)
+            ->first();
+
+        if ($existingToken) {
+            // Update the existing token
+            $existingToken->update(['device_token' => $token]);
+            return response()->json(['status' => 'success', 'message' => 'Token updated successfully.'], 200);
+        } else {
+            // Create a new token record
+            $notification = UserHasToken::create([
+                'device_token' => $token,
+                'device_id' => $device_id,
+                'user_id' => $user_id
+            ]);
             if ($notification) {
-                return response()->json(['status' => 'success', 'message' => 'Token Store Successfully.'], 200);
+                return response()->json(['status' => 'success', 'message' => 'Token stored successfully.'], 200);
             }
-        } catch (\Throwable $th) {
-            return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
+    } catch (\Throwable $th) {
+        return ApiResponses::errorResponse([], $th->getMessage(), 500);
     }
+}
+
     public static function sendPushNotification($deviceToken, $title, $body)
     {
         try {
