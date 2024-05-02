@@ -17,6 +17,8 @@ use App\Http\Controllers\TaskHasMembersController;
 use App\Http\Controllers\ProjectHasMembersController;
 use App\Http\Controllers\TaskHasCommentController;
 use App\Models\TaskHasComment;
+use App\Models\User;
+use Carbon\Carbon;
 use Twilio\Rest\Client;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
@@ -147,5 +149,9 @@ Route::middleware('auth:sanctum')->group(function () {
         return 'Done';
     });
 
+    Route::get('testing', function(){
+        $deviceTokens = User::with('token')->has('token')->get()->toArray();
+        return $deviceTokens;
+    });
 
 });

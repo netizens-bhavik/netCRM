@@ -18,7 +18,7 @@ class Task extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'id', 'name', 'project_id', 'start_date', 'due_date', 'description', 'priority', 'status', 'voice_memo','document', 'manage_by'
+        'id', 'name', 'project_id', 'start_date', 'due_date','completed_date','description', 'priority', 'status', 'voice_memo','document', 'manage_by'
     ];
     public const priority = [
         'High', 'Low', 'Medium'

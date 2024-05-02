@@ -11,6 +11,7 @@ use App\Models\Project;
 use App\Models\TaskHasDocument;
 use Illuminate\Support\Str;
 use App\Models\TaskHasMembers;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class TaskServices
@@ -265,7 +266,7 @@ class TaskServices
                     // 'action' => "<a href='" . url('project/' . $project->id . '/edit') . "' class='me-3'><i class='ti ti-edit'></i></a><a href='" . url('project/' . $project->id . '/delete') . "'><i class='ti ti-trash'></i></a>"
                 ];
             }
-            return Datatables::of($data)->rawColumns(['name', 'action'])->make(true);
+            return DataTables::of($data)->rawColumns(['name', 'action'])->make(true);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
@@ -306,7 +307,16 @@ class TaskServices
             if ($task) {
                 $Statuses = Task::status;
                 if (in_array($Status, $Statuses)) {
-                    $task->update(['status' => $Status]);
+                    if($Status == 'Completed')
+                    {
+                        $task->update([
+                            'completed_date'=> Carbon::now()->toDateString(),
+                            'status' => $Status]);
+                    }
+                    else
+                    {
+                        $task->update(['status' => $Status]);
+                    }
                     return response()->json(['status' => 'success', 'message' => 'Status Change Successfully.']);
                 } else {
                     throw new Exception('Status Is In Correct.');

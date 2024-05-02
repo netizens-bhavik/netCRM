@@ -84,13 +84,24 @@ class HomeServices
 
     public static function topPerformers(){
         try {
-            $topPerformers = User::withCount(['tasks as completed_count' => function($query) {
-                $query->where('status', 'Completed');
-            }, 'tasks as pending_count' => function($query) {
-                $query->whereIn('status',['Pending', 'Hold', 'In-progress']);
-            }])->whereHas('tasks', function($query) {
-                $query->whereIn('status', ['Pending', 'Hold', 'In-progress','Completed']);
-            })->get();
+            $topPerformers = User::withCount([
+                'tasks as completed_count' => function($query) {
+                    $query->where('status', 'Completed');
+                },
+                'tasks as pending_count' => function($query) {
+                    $query->whereIn('status', ['Pending', 'Hold', 'In-progress']);
+                },
+                'tasks as overdue_count' => function($query) {
+                    $query->whereNotNull('due_date')
+                          ->where('status', 'Completed')
+                          ->whereColumn('completed_date', '>', 'due_date');
+                }
+            ])
+            ->whereHas('tasks', function($query) {
+                $query->whereIn('status', ['Pending', 'Hold', 'In-progress', 'Completed']);
+            })
+            ->get();
+
 
             // $topPerformers = User::withCount(['tasks' => function ($query) {
             //     $query->where('status', 'Completed');

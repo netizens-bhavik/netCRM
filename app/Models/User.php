@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -72,8 +73,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class, 'project_has_members', 'user_id', 'project_id');
     }
-    public function user_has_tokens()
+
+    public function token()
     {
-        return $this->belongsTo(UserHasToken::class,'user_id')->select('device_id');
+        return $this->hasOne(UserHasToken::class);
     }
 }
