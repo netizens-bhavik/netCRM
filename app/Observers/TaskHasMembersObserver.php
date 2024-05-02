@@ -21,6 +21,7 @@ class TaskHasMembersObserver
             'refrence_id' => $taskHasMembers->task_id,
             'type' => 'task'
         ]);
+        
         Log::info('Notification created' .$taskHasMembers);
     }
 

@@ -84,13 +84,22 @@ class HomeServices
 
     public static function topPerformers(){
         try {
-            $topPerformers = User::withCount(['tasks' => function ($query) {
+            $topPerformers = User::withCount(['tasks as completed_count' => function($query) {
                 $query->where('status', 'Completed');
-            }])
-            ->having('tasks_count', '>', 0) // Only users with completed tasks
-            ->orderByDesc('tasks_count')
-            ->get();
+            }, 'tasks as pending_count' => function($query) {
+                $query->whereIn('status',['Pending', 'Hold', 'In-progress']);
+            }])->whereHas('tasks', function($query) {
+                $query->whereIn('status', ['Pending', 'Hold', 'In-progress','Completed']);
+            })->get();
 
+            // $topPerformers = User::withCount(['tasks' => function ($query) {
+            //     $query->where('status', 'Completed');
+            //     $query->where('status','Pending');
+            //     $query->where('user_id');
+            // }])
+            // ->having('tasks_count', '>', 0) // Only users with completed tasks
+            // ->orderByDesc('tasks_count')
+            // ->get();
             return response()->json(['top_performers' => $topPerformers]);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];

@@ -72,4 +72,8 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class, 'project_has_members', 'user_id', 'project_id');
     }
+    public function user_has_tokens()
+    {
+        return $this->belongsTo(UserHasToken::class,'user_id')->select('device_id');
+    }
 }

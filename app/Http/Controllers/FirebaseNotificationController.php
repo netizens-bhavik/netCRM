@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDeviceTokenRequest;
 use App\Services\FirebaseNotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FirebaseNotificationController extends Controller
 {
