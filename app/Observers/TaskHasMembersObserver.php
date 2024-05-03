@@ -22,9 +22,7 @@ class TaskHasMembersObserver
             'refrence_id' => $taskHasMembers->task_id,
             'type' => 'task'
         ]);
-        // $deviceTokens = User::with('token')->has('token')->where('id',$taskHasMembers->user_id)->get()->toArray();
         Log::info('Notification created' .$taskHasMembers);
-        // Log::info($deviceTokens);
     }
 
     /**

@@ -132,9 +132,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('pushNotification',[FirebaseNotificationController::class,'sendNotification']);
 
     Route::get('check-whatsapp',function(){
-
-        // return send_whatsapp_notification();
-
         $sid = env('TWILIO_ACCOUNT_SID');
         $token  = env('TWILIO_AUTH_TOKEN');
         $twilio = new Client($sid, $token);
@@ -143,15 +140,10 @@ Route::middleware('auth:sanctum')->group(function () {
           ->create("whatsapp:+917046260656", // to
             array(
               "from" => "whatsapp:+14155238886",
-              "body" => 'Your appointment is coming up on July 21 at 3PM'
+              "body" => 'TESTING messsage'
             )
           );
-        return 'Done';
-    });
-
-    Route::get('testing', function(){
-        $deviceTokens = User::with('token')->has('token')->get()->toArray();
-        return $deviceTokens;
+        return $message;
     });
 
 });

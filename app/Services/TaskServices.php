@@ -61,6 +61,14 @@ class TaskServices
             foreach ($request->task_members as $key => $value) {
                 TaskHasMembers::create(['id' => Str::uuid(), 'task_id' => $task->id, 'user_id' => $value]);
             }
+            $manageByArray = [$task->manage_by];
+            $userIds = array_merge($request->task_members, $manageByArray);
+            $userIds = array_unique($userIds);
+            $userData = User::with('token')->has('token')->whereIn('id',$userIds)->get()->toArray();
+            foreach ($userData as $userDataResponse) {
+                $device_token = $userDataResponse['token']['device_token'];
+                send_firebase_notification($device_token,'Your Task is Created',$request->name);
+            }
             return response()->json(['status' => 'success', 'message' => 'Task Create Successfully.']);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
