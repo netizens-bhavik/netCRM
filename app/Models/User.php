@@ -76,6 +76,6 @@ class User extends Authenticatable
 
     public function token()
     {
-        return $this->hasOne(UserHasToken::class);
+        return $this->hasMany(UserHasToken::class);
     }
 }
