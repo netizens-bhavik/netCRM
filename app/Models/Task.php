@@ -21,7 +21,7 @@ class Task extends Model
         'id', 'name', 'project_id', 'start_date', 'due_date','completed_date','description', 'priority', 'status', 'voice_memo','document', 'manage_by'
     ];
     public const priority = [
-        'High', 'Low', 'Medium'
+        '1', '2', '3'
     ];
     public const status = [
         'Pending', 'Hold', 'In-progress', 'Completed'
