@@ -10,4 +10,4 @@ use Illuminate\Support\Facades\Schedule;
 
 
 Schedule::command('app:dead-line-task-scheduler')->daily();
-
+Schedule::command('notifications:create-upcoming-tasks')->daily();
