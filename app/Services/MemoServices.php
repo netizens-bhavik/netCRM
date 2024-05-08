@@ -43,7 +43,7 @@ class MemoServices
             {
                 $memos->latest();
             }
-            $memos = $memos->paginate(10, ['user_id', 'title', 'description', 'status','created_at','updated_at']);
+            $memos = $memos->paginate(10);
             return response()->json(['status' => 'success','data' => $memos]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
@@ -72,7 +72,7 @@ class MemoServices
     public static function update($request,$memoId){
         try {
             $memo = Memo::find($memoId);
-            $memo->update(['title' => $request->title,'description' => $request->description]);
+            $memo->update(['title' => $request->title,'description' => $request->description,'status'=>$request->status]);
             return response()->json(['status' => 'success','message' => 'Memo Update Successfully.']);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
