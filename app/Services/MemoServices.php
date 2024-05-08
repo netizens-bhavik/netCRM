@@ -41,9 +41,9 @@ class MemoServices
             }
             else
             {
-                $memos->latest()->paginate(10);
+                $memos->latest();
             }
-            $memos = $memos->get(['user_id', 'title', 'description', 'status','created_at','updated_at']);
+            $memos = $memos->paginate(10, ['user_id', 'title', 'description', 'status','created_at','updated_at']);
             return response()->json(['status' => 'success','data' => $memos]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
