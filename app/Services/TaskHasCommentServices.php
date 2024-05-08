@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Notification;
+use App\Models\Task;
 use Exception;
 use App\Traits\ApiResponses;
 use App\Models\TaskHasComment;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class TaskHasCommentServices
@@ -29,6 +32,42 @@ class TaskHasCommentServices
     {
         try {
             TaskHasComment::create(['user_id' => Auth::id(), 'task_id' => $taskId, 'comment' => $request->comment]);
+            $userIds = Task::with(['members.user:id', 'observers.user:id'])
+            ->where('id', $taskId)
+            ->get()
+            ->flatMap(function ($task) {
+                return array_merge(
+                    $task->members->pluck('user_id')->toArray(),
+                    $task->observers->pluck('observer_id')->toArray(),
+                    [$task->assigned_to, $task->created_by]
+                );
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+            $userData = User::with('token')->has('token')->whereIn('id',$userIds)->get()->toArray();
+            $taskData = Task::find($taskId);
+            if(!empty($userData))
+            {
+                foreach ($userData as $userDataResponse) {
+                    $device_token = $userDataResponse['token'];
+                    foreach ($device_token as $value) {
+                        if(!empty($value['device_token']))
+                        {
+                            send_firebase_notification($value['device_token'],'Comment' ,$userDataResponse['name'].' has commented on the " '.$taskData->name.' "');
+                            // send_firebase_notification($value['device_token'],'Comment' ,"Test");
+                        }
+
+                    }
+                    Notification::create([
+                        'title' => 'Task Comment',
+                        'description' => $userDataResponse['name'].' has commented on the " '.$taskData->name.' "',
+                        'user_id' => $userDataResponse['id'],
+                        'refrence_id' => $taskData->id,
+                        'type' => 'comment'
+                    ]);
+                }
+            }
             return response()->json(['status' => 'success', 'message' => 'Comment Create Successfully.']);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);

@@ -18,7 +18,7 @@ class Task extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'id', 'name', 'project_id', 'start_date', 'due_date','completed_date','description', 'priority', 'status', 'voice_memo','document', 'manage_by'
+        'id', 'name', 'project_id', 'start_date', 'due_date','completed_date','description', 'priority', 'status', 'voice_memo','document', 'created_by','assigned_to'
     ];
     public const priority = [
         '1', '2', '3','4'
@@ -44,14 +44,18 @@ class Task extends Model
     {
         return $this->hasMany(TaskHasMembers::class);
     }
+    public function observers():HasMany
+    {
+        return $this->hasMany(TaskHasObservers::class);
+    }
     /**
      * Get the managedBy that owns the Project
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function manageBy(): BelongsTo
+    public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'manage_by')->select(['id', 'name'])->with('roles:name,label');
+        return $this->belongsTo(User::class, 'created_by')->select(['id', 'name','avtar'])->with('roles:name,label');
     }
     public function users()
     {
@@ -65,5 +69,15 @@ class Task extends Model
     public function documents(): HasMany
     {
         return $this->hasMany(TaskHasDocument::class);
+    }
+
+    /**
+     * Get the user that owns the Task
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assignedTo(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'assigned_to')->select(['id', 'name','avtar']);
     }
 }

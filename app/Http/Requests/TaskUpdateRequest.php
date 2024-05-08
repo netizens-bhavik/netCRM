@@ -23,15 +23,17 @@ class TaskUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'project_id' => ['required'],
+            'project_id' => ['nullable'],
             'start_date'  => ['required'],
             'due_date'  => ['nullable'],
             'description'  => ['nullable'],
             'priority'  => ['required'],
             'status'  => ['required'],
             // 'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav'],
-            'task_members' => ['required','array'],
-            'document.*' => ['nullable','max:2048']
+            'task_members' => ['nullable','array'],
+            'task_observers' => ['nullable','array'],
+            'document.*' => ['nullable','max:51200'],
+            'assigned_to' => 'required',
         ];
     }
 }

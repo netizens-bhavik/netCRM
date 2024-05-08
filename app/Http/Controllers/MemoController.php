@@ -13,10 +13,10 @@ class MemoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $response = MemoServices::index();
+            $response = MemoServices::index($request);
             return $response;
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'error' => $th->getMessage()]);

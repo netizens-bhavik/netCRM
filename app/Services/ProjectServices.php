@@ -28,7 +28,7 @@ class ProjectServices
         try {
             $project = Project::create([
                 'id' => Str::uuid(),
-                'client_id' => $request->client_id,
+                'client_id' => $request->has('client_id') ? $request->client_id : null,
                 'manage_by' => $request->has('manage_by') ? $request->manage_by : null,
                 'name' => $request->name,
                 'start_date' => $request->has('start_date') ? $request->start_date : null,
@@ -57,6 +57,7 @@ class ProjectServices
     {
         try {
             $project = Project::find($projectId);
+            // dd($project);
             if ($project) {
                 $projectMembers = ProjectHasMembers::where('project_id', $projectId)->get('user_id');
                 if (!empty($projectMembers)) {
@@ -78,13 +79,14 @@ class ProjectServices
                     'currency' => $project->currency,
                     'projectMembers' => $member
                 ];
-                if ($request->expectsJson()) {
+                // if ($request->expectsJson()) {
                     return response()->json(['status' => 'success', 'data' => $data]);
-                } else {
-                    $clients = Client::latest('created_at')->get(['id', 'name']);
-                    $users = User::withoutRole('super-admin')->latest('created_at')->get();
-                    return view('project.create', compact('clients', 'users', 'data'));
-                }
+                // } else {
+                    // dd($data);
+                //     $clients = Client::latest('created_at')->get(['id', 'name']);
+                //     $users = User::withoutRole('super-admin')->latest('created_at')->get();
+                //     return view('project.create', compact('clients', 'users', 'data'));
+                // }
             } else {
                 throw new Exception('Project Not Found');
             }
@@ -99,7 +101,7 @@ class ProjectServices
             $project = Project::find($projectId);
             if (!empty($project)) {
                 $project->update([
-                    'client_id' => $request->client_id,
+                    'client_id' =>$request->has('client_id') ? $request->client_id : null,
                     'manage_by' => $request->has('manage_by') ? $request->manage_by : null,
                     'name' => $request->name,
                     'start_date' => $request->has('start_date') ? $request->start_date : null,
@@ -169,7 +171,7 @@ class ProjectServices
                         'priority' => $task->priority,
                         'status' => $task->status,
                         'voice_memo' => url($task->voice_memo),
-                        'manage_by' => $task->manage_by
+                        'created_by' => $task->created_by
                     ];
                 }
                 $data['tasks'] = $_tasks;

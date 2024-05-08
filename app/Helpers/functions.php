@@ -29,12 +29,10 @@ function send_firebase_notification($deviceToken,$title,$body)
 {
     try {
         $json_credentials = file_get_contents(storage_path(env('FIREBASE_CREDENTIALS')));
-        // // Log the contents
-        // Log::info($json_credentials);
 
-        Log::info("device token : $deviceToken");
-        Log::info("title : $title");
-        Log::info("body : $body");
+        // Log::info("device token : $deviceToken");
+        // Log::info("title : $title");
+        // Log::info("body : $body");
 
         $firebase = (new Factory)->withServiceAccount($json_credentials);
         $messaging = $firebase->createMessaging();

@@ -17,7 +17,7 @@ class TaskObserver
         $notification = Notification::create([
             'title' => 'Task Created',
             'description' => $task->name,
-            'user_id' => $task->manage_by,
+            'user_id' => $task->created_by,
             'refrence_id' => $task->id,
             'type' => 'task'
         ]);

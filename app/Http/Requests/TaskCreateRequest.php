@@ -24,7 +24,7 @@ class TaskCreateRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'project_id' => ['required'],
+            'project_id' => ['nullable'],
             'start_date'  => ['required'],
             'due_date'  => ['nullable'],
             'description'  => ['nullable'],
@@ -32,8 +32,10 @@ class TaskCreateRequest extends FormRequest
             'status'  => ['required','in:'.implode(',',Task::status)],
             // 'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav,audio/wav'],
             // 'voice_memo'  => ['required', 'extensions:wav,audio/wav'],
-            'task_members' => ['required','array'],
-            'document.*' => ['nullable','max:2048']
+            'task_members' => ['nullable','array'],
+            'task_observers'=>['nullable','array'],
+            'document.*' => ['nullable','max:51200'],
+            'assigned_to' => ['required'],
         ];
     }
 }

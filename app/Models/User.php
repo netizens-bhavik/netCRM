@@ -69,6 +69,10 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(Task::class, TaskHasMembers::class, 'user_id', 'id', 'id', 'task_id');
     }
+    public function tasksObservers()
+    {
+        return $this->hasManyThrough(Task::class, TaskHasObservers::class, 'observer_id', 'id', 'id', 'task_id');
+    }
     public function projects()
     {
         return $this->belongsToMany(Project::class, 'project_has_members', 'user_id', 'project_id');

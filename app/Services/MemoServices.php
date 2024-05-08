@@ -16,10 +16,34 @@ class MemoServices
     {
         //
     }
-    public static function index()
+    public static function index($request)
     {
         try {
-            $memos = Memo::where('user_id',Auth::id())->get(['title','description']);
+            // $memos = Memo::with('user')->where(function ($query) {
+            //     $query->where('user_id', Auth::id())
+            //         ->orWhere('status', 'public')
+            //         ->orWhere('status', 'private');
+            // })->get(['user_id', 'title', 'description', 'status','created_at','updated_at']);
+
+            $memos = Memo::with('user')->where(function ($query) {
+                $query->where('user_id', Auth::id())
+                      ->orWhere('status', 'public')
+                      ->orWhere('status', 'private');
+            });
+
+            if ($request->search && $request->sortBy && $request->order) {
+                $memos->where('title', 'like', '%' . $request->search . '%')
+                      ->orderBy($request->sortBy, $request->order);
+            } elseif ($request->search) {
+                $memos->where('title', 'like', '%' . $request->search . '%');
+            } elseif ($request->sortBy && $request->order) {
+                $memos->orderBy($request->sortBy, $request->order);
+            }
+            else
+            {
+                $memos->latest()->paginate(10);
+            }
+            $memos = $memos->get(['user_id', 'title', 'description', 'status','created_at','updated_at']);
             return response()->json(['status' => 'success','data' => $memos]);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
@@ -27,7 +51,7 @@ class MemoServices
     }
     public static function store($request){
         try {
-            Memo::create(['user_id' => Auth::id(),'title' => $request->title,'description' => $request->description]);
+            Memo::create(['user_id' => Auth::id(),'title' => $request->title,'description' => $request->description,'status'=>$request->status]);
             return response()->json(['status' => 'success','message' => 'Memo Create Successfully.']);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);

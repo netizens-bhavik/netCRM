@@ -23,7 +23,8 @@ class CreateMemoRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'description' => ['nullable']
+            'description' => ['nullable'],
+            'status'=> ['required'],
         ];
     }
 }

@@ -22,7 +22,7 @@ class ProjectUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => ['required'],
+            'client_id' => ['nullable'],
             'manage_by' => ['nullable'],
             'name' => ['required'],
             'start_date' => ['required', 'date'],

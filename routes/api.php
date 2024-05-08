@@ -25,6 +25,7 @@ Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
 Route::middleware('auth:sanctum')->group(function () {
 
+    //users routes
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('user/edit/{userId}', [UserController::class, 'edit']);
     Route::post('user/{UserId}/update', [UserController::class, 'update']);
@@ -36,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('reset-password/{userId}',[UserController::class,'resetPassword']);
     Route::post('forgot-password',[UserController::class,'forgotPassword']);
 
+    //client routes
     Route::get('all-client-list', [ClientController::class, 'allClientList']);
     Route::post('client/create', [ClientController::class, 'store']);
     Route::get('client/edit/{clientId}', [ClientController::class, 'edit']);
@@ -43,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('client/{clientId}/delete', [ClientController::class, 'destroy']);
     Route::get('allClient',[ClientController::class,'allClients']);
 
+    //project routes
     Route::get('all-project-list', [ProjectController::class, 'allProjectList']);
     Route::post('project/create', [ProjectController::class, 'store']);
     Route::get('project/edit/{projectId}', [ProjectController::class, 'edit']);
@@ -50,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('project/{projectId}/delete', [ProjectController::class, 'destroy']);
     Route::get('all-project',[ProjectController::class,'allProjects']);
 
+    //task routes
     Route::get('all-task-list', [TaskController::class, 'allTaskList']);
     Route::post('task/create', [TaskController::class, 'store']);
     Route::get('task/edit/{taskId}', [TaskController::class, 'edit']);
