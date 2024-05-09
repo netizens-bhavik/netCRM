@@ -15,7 +15,7 @@ class ProjectHasMembersObserver
     public function created(ProjectHasMembers $projectHasMembers): void
     {
         $notification = Notification::create([
-            'title' => 'Task Created',
+            'title' => 'Project Created',
             'description' => Project::find($projectHasMembers->project_id)->name,
             'user_id' => $projectHasMembers->user_id,
             'refrence_id' => $projectHasMembers->project_id,
