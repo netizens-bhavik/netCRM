@@ -32,8 +32,8 @@ class TaskCreateRequest extends FormRequest
             'status'  => ['required','in:'.implode(',',Task::status)],
             // 'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav,audio/wav'],
             // 'voice_memo'  => ['required', 'extensions:wav,audio/wav'],
-            'task_members' => ['nullable','array'],
-            'task_observers'=>['nullable','array'],
+            'task_members' => ['required','array'],
+            'task_observers'=>['required','array'],
             'document.*' => ['nullable','max:51200'],
             'assigned_to' => ['required'],
         ];
