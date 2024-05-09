@@ -64,7 +64,7 @@ class TaskHasCommentServices
                         'description' => $userDataResponse['name'].' has commented on the " '.$taskData->name.' "',
                         'user_id' => $userDataResponse['id'],
                         'refrence_id' => $taskData->id,
-                        'type' => 'comment'
+                        'type' => 'Task'
                     ]);
                 }
             }
