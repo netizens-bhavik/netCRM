@@ -27,12 +27,12 @@ class DatabaseSeeder extends Seeder
         }
         $this->call([
             CountriesTableSeeder::class,
-            StatesTableSeeder::class,
-            CitiesTableChunkOneSeeder::class,
-            CitiesTableChunkTwoSeeder::class,
-            CitiesTableChunkThreeSeeder::class,
-            CitiesTableChunkFourSeeder::class,
-            CitiesTableChunkFiveSeeder::class,
+            // StatesTableSeeder::class,
+            // CitiesTableChunkOneSeeder::class,
+            // CitiesTableChunkTwoSeeder::class,
+            // CitiesTableChunkThreeSeeder::class,
+            // CitiesTableChunkFourSeeder::class,
+            // CitiesTableChunkFiveSeeder::class,
             PermissionSeeder::class,
         ]);
         $superAdminRole = Role::where('name', 'super-admin')->first();
