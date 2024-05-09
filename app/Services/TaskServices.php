@@ -269,23 +269,42 @@ class TaskServices
         }
     }
     public static function allTaskList($request)
-    {
-        try {
-            if ($request->search && $request->sortBy && $request->order) {
-                $tasks = Task::with('project', 'members.user', 'observers.user','createdBy','documents','assignedTo')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } elseif ($request->search) {
-                $tasks = Task::with('project', 'members.user', 'observers.user','createdBy','documents','assignedTo')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
-            } elseif ($request->sortBy && $request->order) {
-                $tasks = Task::with('project', 'members.user', 'observers.user','createdBy','documents','assignedTo')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } else {
-                $tasks = Task::latest()->with('project', 'members.user', 'observers.user','createdBy','documents','assignedTo')->paginate(10);
-            }
-            return response()->json(['status' => 'success', 'data' => $tasks], 200);
-        } catch (\Throwable $th) {
-            $res = ['status' => 'error', 'message' => $th->getMessage()];
-            return response()->json($res);
+{
+    try {
+        $query = Task::with('project', 'members.user', 'observers.user','createdBy','documents','assignedTo');
+
+        // Apply search filter if provided
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
+
+        // Apply status filter if provided
+        if ($request->status) {
+            $query->whereStatus($request->status);
+        }
+
+        // Apply priority filter if provided
+        if ($request->priority) {
+            $query->wherePriority($request->priority);
+        }
+
+        // Apply sorting if provided
+        if ($request->sortBy && $request->order) {
+            $query->orderBy($request->sortBy, $request->order);
+        } else {
+            // Default sorting
+            $query->latest();
+        }
+
+        $tasks = $query->paginate(10);
+
+        return response()->json(['status' => 'success', 'data' => $tasks], 200);
+    } catch (\Throwable $th) {
+        $res = ['status' => 'error', 'message' => $th->getMessage()];
+        return response()->json($res);
     }
+}
+
     public static function index()
     {
         try {

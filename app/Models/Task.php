@@ -80,4 +80,12 @@ class Task extends Model
     {
         return $this->belongsTo(User::class,'assigned_to')->select(['id', 'name','avtar']);
     }
+    public function scopeWhereStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+    public function scopeWherePriority($query, $priority)
+    {
+        return $query->where('priority', $priority);
+    }
 }
