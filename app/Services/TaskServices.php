@@ -193,14 +193,16 @@ class TaskServices
             TaskHasMembers::where('task_id', $task->id)->delete();
             TaskHasObservers::where('task_id', $task->id)->delete();
 
-            foreach ($request->task_members as $userId) {
-                TaskHasMembers::create(['task_id' => $task->id, 'user_id' => $userId]);
+            if (is_array($request->task_members)) {
+                foreach ($request->task_members as $userId) {
+                    TaskHasMembers::create(['task_id' => $task->id, 'user_id' => $userId]);
+                }
             }
-
-            foreach ($request->task_observers as $observerId) {
-                TaskHasObservers::create(['task_id' => $task->id, 'observer_id' => $observerId]);
+            if (is_array($request->task_observers)) {
+                foreach ($request->task_observers as $observerId) {
+                    TaskHasObservers::create(['task_id' => $task->id, 'observer_id' => $observerId]);
+                }
             }
-
             DB::commit();
 
             return response()->json(['status' => 'success', 'message' => 'Task Update Successfully.']);

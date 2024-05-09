@@ -30,8 +30,8 @@ class TaskUpdateRequest extends FormRequest
             'priority'  => ['required'],
             'status'  => ['required'],
             // 'voice_memo'  => ['required','mimes:application/octet-stream,audio/mpeg,mpga,mp3,wav'],
-            'task_members' => ['required','array'],
-            'task_observers' => ['required','array'],
+            'task_members' => ['nullable','array'],
+            'task_observers' => ['nullable','array'],
             'document.*' => ['nullable','max:51200'],
             'assigned_to' => 'required',
         ];
