@@ -399,13 +399,13 @@ class TaskServices
             $user = User::find($userId);
             if ($user) {
                 $tasksQuery = Task::with('members.user', 'observers.user', 'project', 'createdBy', 'assignedTo')
-                    ->whereHas('members', function ($query) use ($user) {
+                    ->orWhereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     })
-                    ->whereHas('observers', function ($query) use ($user) {
+                    ->orWhereHas('observers', function ($query) use ($user) {
                         $query->where('observer_id', $user->id);
                     })
-                    ->whereHas('assignedTo', function ($query) use ($user) {
+                    ->orWhereHas('assignedTo', function ($query) use ($user) {
                         $query->where('assigned_to', $user->id);
                     })
                     ->orWhere('created_by', $user->id);
