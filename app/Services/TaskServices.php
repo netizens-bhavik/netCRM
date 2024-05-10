@@ -420,7 +420,7 @@ class TaskServices
                 {
                     $tasksQuery->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order);
                 }
-                $tasks = $tasksQuery->paginate(10);
+                $tasks = $tasksQuery->latest()->paginate(10);
             } else {
                 throw new Exception('User Not Found.');
             }
