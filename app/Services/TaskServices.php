@@ -260,6 +260,12 @@ class TaskServices
                 ->whereHas('members', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
+                ->orWhereHas('observers',function ($query) use ($user){
+                    $query->where('observer_id',$user->id);
+                })
+                ->orWhereHas('assignedTo',function ($query) use ($user){
+                    $query->where('assigned_to',$user->id);
+                })
                 ->Orwhere('created_by', $user->id)->get()->toArray();
 
             return response()->json(['status' => 'success', 'data' => $tasks]);

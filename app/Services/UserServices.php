@@ -187,20 +187,23 @@ class UserServices
     {
         try {
             $role = [];
-            if ($request->search && $request->sortBy && $request->order) {
-                $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } elseif ($request->search) {
-                $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
-            } elseif ($request->sortBy && $request->order) {
-                $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } else {
-                $nonAdminUsers = User::with('roles')->withoutRole('super-admin')->paginate(10);
+            $nonAdminUsersQuery = User::with('roles')->withoutRole('super-admin');
+
+            if ($request->search) {
+                $nonAdminUsersQuery->where('name', 'like', '%' . $request->search . '%');
             }
+            if ($request->sortBy && $request->order) {
+                $nonAdminUsersQuery->orderBy($request->sortBy, $request->order);
+            }
+            if($request->sortBy && $request->order && $request->search)
+            {
+                $nonAdminUsersQuery->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order);
+            }
+            $nonAdminUsers = $nonAdminUsersQuery->latest()->paginate(10);
+
             $nonAdminUsers->each(function ($user) {
                 $firstRole = $user->roles->first();
                 $role = ['value' => $firstRole ? $firstRole->name : null, 'label' => $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null];
-                // $user->rolesName = $firstRole ? $firstRole->name : null;
-                // $user->rolesLabel = $firstRole ? Role::roles[$firstRole->name] ?? $firstRole->name : null;
                 $user->roleName = $role;
                 unset($user->roles);
             });
