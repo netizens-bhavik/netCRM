@@ -228,11 +228,17 @@ class UserServices
                     })
                     ->Orwhere('manage_by', $user->id)->get()->toArray();
 
-                $tasks = Task::with('members.user', 'project', 'createdBy')
-                    ->whereHas('members', function ($query) use ($user) {
-                        $query->where('user_id', $user->id);
-                    })
-                    ->Orwhere('created_by', $user->id)->get()->toArray();
+                $tasks = Task::with('members.user', 'observers.user', 'project', 'createdBy', 'assignedTo')
+                        ->orWhereHas('members', function ($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->orWhereHas('observers', function ($query) use ($user) {
+                            $query->where('observer_id', $user->id);
+                        })
+                        ->orWhereHas('assignedTo', function ($query) use ($user) {
+                            $query->where('assigned_to', $user->id);
+                        })
+                        ->orWhere('created_by', $user->id)->get()->toArray();
                 $response = ['status' => 'Success', 'data' => ['user' => $user, 'Project' => $projects, 'task' => $tasks]];
                 return response()->json($response);
             } else {
