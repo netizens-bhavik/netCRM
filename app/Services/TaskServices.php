@@ -398,33 +398,29 @@ class TaskServices
         try {
             $user = User::find($userId);
             if ($user) {
-                if ($request->search && $request->sortBy && $request->order) {
-                    $tasks = Task::with('members.user','observers.user', 'project', 'createdBy','assignedTo')
-                        ->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)
-                        ->whereHas('members', function ($query) use ($user) {
-                            $query->where('user_id', $user->id);
-                        })
-                        ->Orwhere('created_by', $user->id)->paginate(10);
-                } elseif ($request->search) {
-                    $tasks = Task::with('members.user', 'observers.user','project', 'createdBy','assignedTo')
-                        ->where('name', 'like', '%' . $request->search . '%')
-                        ->whereHas('members', function ($query) use ($user) {
-                            $query->where('user_id', $user->id);
-                        })
-                        ->Orwhere('created_by', $user->id)->paginate(10);
-                } elseif ($request->sortBy && $request->order) {
-                    $tasks = Task::with('members.user', 'observers.user','project', 'createdBy','assignedTo')->orderBy($request->sortBy, $request->order)
-                        ->whereHas('members', function ($query) use ($user) {
-                            $query->where('user_id', $user->id);
-                        })
-                        ->Orwhere('created_by', $user->id)->paginate(10);
-                } else {
-                    $tasks = Task::with('members.user','observers.user','project', 'createdBy','assignedTo')
-                        ->whereHas('members', function ($query) use ($user) {
-                            $query->where('user_id', $user->id);
-                        })
-                        ->Orwhere('created_by', $user->id)->paginate(10);
+                $tasksQuery = Task::with('members.user', 'observers.user', 'project', 'createdBy', 'assignedTo')
+                    ->whereHas('members', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    })
+                    ->whereHas('observers', function ($query) use ($user) {
+                        $query->where('observer_id', $user->id);
+                    })
+                    ->whereHas('assignedTo', function ($query) use ($user) {
+                        $query->where('assigned_to', $user->id);
+                    })
+                    ->orWhere('created_by', $user->id);
+
+                if ($request->search) {
+                    $tasksQuery->where('name', 'like', '%' . $request->search . '%');
                 }
+                if ($request->sortBy && $request->order) {
+                    $tasksQuery->orderBy($request->sortBy, $request->order);
+                }
+                if($request->sortBy && $request->order && $request->search)
+                {
+                    $tasksQuery->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order);
+                }
+                $tasks = $tasksQuery->paginate(10);
             } else {
                 throw new Exception('User Not Found.');
             }
