@@ -37,7 +37,7 @@ class UserUpdateRequest extends FormRequest
             'date_of_join' => 'nullable',
             'address' => 'nullable',
             // 'adhar_image' => 'required|image'
-            'adhar_image' => 'required'
+            'adhar_image' => 'nullable|image'
         ];
     }
 }

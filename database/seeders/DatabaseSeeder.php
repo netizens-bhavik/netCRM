@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             // CitiesTableChunkFourSeeder::class,
             // CitiesTableChunkFiveSeeder::class,
             PermissionSeeder::class,
+            // AdminPermissionSeeder::class,
         ]);
         $superAdminRole = Role::where('name', 'super-admin')->first();
         $permissions = Permission::all();

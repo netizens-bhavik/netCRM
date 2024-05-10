@@ -48,8 +48,8 @@ class ClientServices
                 'email' => $request->email,
                 'avtar' => $avtar,
                 'country_id' => $request->country_id,
-                'state_id' => $request->state_id,
-                'city_id' => $request->city_id,
+                // 'state_id' => $request->has('state_id') ? $request->state_id : null,
+                // 'city_id' => $request->has('city_id') ? $request->city_id : null,
                 'zipcode' => $request->zipcode,
                 'phone_no' => $request->phone_no,
                 'company_name' => $request->company_name,
@@ -79,8 +79,6 @@ class ClientServices
                     'email' => $client->email,
                     'avtar' => url($client->avtar),
                     'country_id' => $client->country_id,
-                    'state_id' => $client->state_id,
-                    'city_id' => $client->city_id,
                     'zipcode' => $client->zipcode,
                     'phone_no' => $client->phone_no,
                     'company_name' => $client->company_name,
@@ -296,13 +294,13 @@ class ClientServices
         try {
             $data = [];
             if ($request->search && $request->sortBy && $request->order) {
-                $clients = Client::with('country', 'state', 'city')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $clients = Client::with('country')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
             }elseif($request->search){
-                $clients = Client::with('country', 'state', 'city')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
+                $clients = Client::with('country')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
             } elseif ($request->sortBy && $request->order) {
-                $clients = Client::with('country', 'state', 'city')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $clients = Client::with('country')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $clients = Client::latest()->with('country', 'state', 'city')->paginate(10);
+                $clients = Client::latest()->with('country')->paginate(10);
             }
 
             return response()->json(['status' => 'success', 'data' => $clients], 200);
