@@ -27,9 +27,9 @@ class ProjectServices
     {
         try {
             $project = Project::create([
-                'id' => Str::uuid(),
                 'client_id' => $request->has('client_id') ? $request->client_id : null,
                 'manage_by' => $request->has('manage_by') ? $request->manage_by : null,
+                'created_by' =>Auth::id(),
                 'name' => $request->name,
                 'start_date' => $request->has('start_date') ? $request->start_date : null,
                 'deadline' => $request->has('deadline') ? $request->deadline : null,
@@ -38,7 +38,7 @@ class ProjectServices
             ]);
             $project_members = $request->project_members;
             foreach ($project_members as $key => $member) {
-                ProjectHasMembers::create(['id' => Str::uuid(), 'project_id' => $project->id, 'user_id' => $member]);
+                ProjectHasMembers::create(['project_id' => $project->id, 'user_id' => $member]);
             }
             if ($request->expectsJson()) {
                 //For API
@@ -72,6 +72,7 @@ class ProjectServices
                 $data = [
                     'client_id' => $project->client_id,
                     'manage_by' => $project->manage_by,
+                    'created_by'=> $project->createdBy(),
                     'name' => $project->name,
                     'start_date' => $project->start_date,
                     'deadline' => $project->deadline,
@@ -103,6 +104,7 @@ class ProjectServices
                 $project->update([
                     'client_id' =>$request->has('client_id') ? $request->client_id : null,
                     'manage_by' => $request->has('manage_by') ? $request->manage_by : null,
+                    'created_by'=> Auth::id(),
                     'name' => $request->name,
                     'start_date' => $request->has('start_date') ? $request->start_date : null,
                     'deadline' => $request->has('deadline') ? $request->deadline : null,
@@ -112,7 +114,7 @@ class ProjectServices
                 $projectMembers = ProjectHasMembers::where('project_id', $projectId)->delete();
                 $project_members = $request->project_members;
                 foreach ($project_members as $key => $member) {
-                    ProjectHasMembers::create(['id' => Str::uuid(), 'project_id' => $project->id, 'user_id' => $member]);
+                    ProjectHasMembers::create(['project_id' => $project->id, 'user_id' => $member]);
                 }
                 if ($request->expectsJson()) {
                     //For API
@@ -178,7 +180,7 @@ class ProjectServices
                 $response = ['status' => 'success', 'data' => $data];
                 return response()->json($response, 200);
             } else {
-                throw new Exception('No Task Of THis Project.');
+                throw new Exception('No Task Of This Project.');
             }
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
@@ -188,7 +190,7 @@ class ProjectServices
     public static function projectFind($projectId, $request)
     {
         try {
-            $project = Project::with('client', 'manageBy', 'members.user', 'tasks.members.user')->find($projectId);
+            $project = Project::with('client', 'manageBy', 'createdBy','members.user', 'tasks.members.user')->find($projectId);
             if ($project) {
                 $project->members->each(function ($member) {
                     $firstRole = $member->user->roles->first();
@@ -214,11 +216,13 @@ class ProjectServices
     {
         try {
             $user = Auth::user();
-            $projects = Project::with('members.user', 'client', 'manageBy')
+            $projects = Project::with('members.user', 'client', 'manageBy','createdBy')
                 ->whereHas('members', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
-                ->Orwhere('manage_by', $user->id)->get()->toArray();
+                ->Orwhere('manage_by', $user->id)
+                ->Orwhere('created_by', $user->id)
+                ->get()->toArray();
 
             return response()->json(['status' => 'success', 'data' => $projects]);
         } catch (\Throwable $th) {
@@ -230,13 +234,13 @@ class ProjectServices
     {
         try {
             if ($request->search && $request->sortBy && $request->order) {
-                $projects = Project::with('client', 'manageBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $projects = Project::with('client', 'manageBy', 'createdBy','members.user')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
             } elseif ($request->search) {
-                $projects = Project::with('client', 'manageBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
+                $projects = Project::with('client', 'manageBy','createdBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
             } elseif ($request->sortBy && $request->order) {
-                $projects = Project::with('client', 'manageBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
+                $projects = Project::with('client', 'manageBy','createdBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
             } else {
-                $projects = Project::with('client', 'manageBy', 'members.user')->has('members.user')->latest()->paginate(10);
+                $projects = Project::with('client', 'manageBy', 'createdBy','members.user')->has('members.user')->latest()->paginate(10);
             }
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {

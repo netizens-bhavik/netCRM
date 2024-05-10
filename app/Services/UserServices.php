@@ -226,7 +226,9 @@ class UserServices
                     ->whereHas('members', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     })
-                    ->Orwhere('manage_by', $user->id)->get()->toArray();
+                    ->Orwhere('manage_by', $user->id)
+                    ->orWhere('created_by',$user->id)
+                    ->get()->toArray();
 
                 $tasks = Task::with('members.user', 'observers.user', 'project', 'createdBy', 'assignedTo')
                         ->orWhereHas('members', function ($query) use ($user) {

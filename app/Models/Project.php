@@ -21,6 +21,7 @@ class Project extends Model
         'id',
         'client_id',
         'manage_by',
+        'created_by',
         'name',
         'start_date',
         'deadline',
@@ -51,6 +52,16 @@ class Project extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function manageBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'manage_by')->select(['id','name'])->with('roles:name,label');
+    }
+
+    /**
+     * Get the user that owns the Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manage_by')->select(['id','name'])->with('roles:name,label');
     }

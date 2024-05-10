@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 #[ObservedBy([ProjectHasMembersObserver::class])]
 class ProjectHasMembers extends Model
 {
-    use HasFactory;
+    use HasFactory,HasUuids;
     protected $fillable = [
-        'id','project_id', 'user_id',
+        'project_id', 'user_id',
     ];
     /**
      * Get the user that owns the ProjectHasMembers

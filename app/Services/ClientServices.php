@@ -43,7 +43,6 @@ class ClientServices
                 $company_logo = '';
             }
             $client = Client::create([
-                'id' => Str::uuid(),
                 'name' => $request->name,
                 'email' => $request->email,
                 'avtar' => $avtar,
@@ -291,17 +290,24 @@ class ClientServices
     }
     public static function allClientList($request)
     {
+        // dd($request->all());
         try {
-            $data = [];
-            if ($request->search && $request->sortBy && $request->order) {
-                $clients = Client::with('country')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            }elseif($request->search){
-                $clients = Client::with('country')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
-            } elseif ($request->sortBy && $request->order) {
-                $clients = Client::with('country')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } else {
-                $clients = Client::latest()->with('country')->paginate(10);
+            $clientsQuery = Client::with('country');
+
+            if ($request->search) {
+                $clientsQuery->where('name', 'like', '%' . $request->search . '%');
             }
+
+            if ($request->sortBy && $request->order) {
+                $clientsQuery->orderBy($request->sortBy, $request->order);
+            }
+
+            if($request->search && $request->sortBy && $request->order)
+            {
+                $clientsQuery->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order);
+            }
+
+            $clients = $clientsQuery->paginate(10);
 
             return response()->json(['status' => 'success', 'data' => $clients], 200);
         } catch (\Throwable $th) {
