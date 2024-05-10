@@ -233,15 +233,22 @@ class ProjectServices
     public static function allProjectList($request)
     {
         try {
-            if ($request->search && $request->sortBy && $request->order) {
-                $projects = Project::with('client', 'manageBy', 'createdBy','members.user')->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } elseif ($request->search) {
-                $projects = Project::with('client', 'manageBy','createdBy', 'members.user')->where('name', 'like', '%' . $request->search . '%')->paginate(10);
-            } elseif ($request->sortBy && $request->order) {
-                $projects = Project::with('client', 'manageBy','createdBy', 'members.user')->orderBy($request->sortBy, $request->order)->paginate(10);
-            } else {
-                $projects = Project::with('client', 'manageBy', 'createdBy','members.user')->has('members.user')->latest()->paginate(10);
+            $projectsQuery = Project::with('client', 'manageBy', 'createdBy', 'members.user');
+
+            if ($request->search) {
+                $projectsQuery->where('name', 'like', '%' . $request->search . '%');
             }
+
+            if ($request->sortBy && $request->order) {
+                $projectsQuery->orderBy($request->sortBy, $request->order);
+            }
+
+            if (!($request->search || ($request->sortBy && $request->order))) {
+                $projectsQuery->has('members.user');
+            }
+
+            $projects = $projectsQuery->latest()->paginate(10);
+
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
@@ -300,12 +307,13 @@ class ProjectServices
     {
         try {
             $user = User::find($userId);
-            $query = Project::latest()->with('members.user', 'client', 'manageBy')
+            $query = Project::with('members.user', 'client', 'manageBy','createdBy')
                 ->where(function ($query) use ($user) {
                     $query->whereHas('members', function ($q) use ($user) {
                         $q->where('user_id', $user->id);
                     })
-                        ->orWhere('manage_by', $user->id);
+                    ->orWhere('manage_by', $user->id)
+                    ->orWhere('created_by', $user->id);
                 });
             if ($request->has('search')) {
                 $searchTerm = $request->search;
@@ -318,7 +326,7 @@ class ProjectServices
                 $query->orderBy($sortBy, $order);
             }
 
-            $projects = $query->paginate(10);
+            $projects = $query->latest()->paginate(10);
 
             return response()->json(['status' => 'success', 'data' => $projects]);
         } catch (\Throwable $th) {
