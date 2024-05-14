@@ -55,7 +55,6 @@ class TaskHasCommentServices
                         if(!empty($value['device_token']))
                         {
                             send_firebase_notification($value['device_token'],'Comment' ,$userDataResponse['name'].' has commented on the " '.$taskData->name.' "');
-                            // send_firebase_notification($value['device_token'],'Comment' ,"Test");
                         }
 
                     }
@@ -82,7 +81,6 @@ class TaskHasCommentServices
             } else {
                 throw new Exception('Comment Not Found');
             }
-            return response()->json(['status' => 'success', 'message' => 'Comment Create Successfully.']);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
@@ -97,7 +95,6 @@ class TaskHasCommentServices
             } else {
                 throw new Exception('Comment Not Found');
             }
-            return response()->json(['status' => 'success', 'message' => 'Comment Create Successfully.']);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
@@ -112,7 +109,6 @@ class TaskHasCommentServices
             } else {
                 throw new Exception('Comment Not Found');
             }
-            return response()->json(['status' => 'success', 'message' => 'Comment Create Successfully.']);
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }

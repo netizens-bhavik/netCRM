@@ -19,12 +19,12 @@ class RoleServices
     public static function allRole()
     {
         try {
-            $roles = Role::roles;
+            $roles = Role::get()->toArray();
             $data = [];
             foreach ($roles  as $key => $role) {
                 $data[] = [
-                    'label' => $role,
-                    'value' => $key,
+                    'label' => $role['label'],
+                    'value' => $role['name'],
                 ];
             }
             // $data['roles'] = $data;

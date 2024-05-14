@@ -27,8 +27,6 @@ class TaskServices
     }
     public static function createTask($request)
     {
-        // dd($request->all());
-
         try {
             if ($request->hasFile('voice_memo')) {
                 $destinationPath = 'voiceMemo';
