@@ -27,7 +27,9 @@ class UserServices
     public static function allUsers($request)
     {
         try {
-            $users = User::withoutRole('super-admin')->get();
+            $users = User::withoutRole('super-admin')->with(['roles' => function ($query) {
+                        $query->select('name', 'label');
+                }])->get();
             if ($request->project_id) {
                 // $users = DB::select('select u.*  from project_has_members as pm join users as u on u.id = pm.user_id where pm.project_id = "' . $request->project_id . '"');
                 $users = DB::table('project_has_members as pm')
@@ -38,6 +40,7 @@ class UserServices
 
 
             }
+
             $response = ['status' => 'Success', 'data' => $users];
             return response()->json($response);
         } catch (\Throwable $th) {
