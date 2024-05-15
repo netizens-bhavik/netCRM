@@ -40,18 +40,17 @@ class UserServices
 
 
             // }
-
-            $users = User::withoutRole('super-admin')->with(['roles' => function ($query) {
-                $query->select('name', 'label');
-            }]);
+            $usersQuery = User::withoutRole('super-admin');
 
             if ($request->project_id) {
-                $users = $users->join('project_has_members as pm', 'users.id', '=', 'pm.user_id')
-                               ->where('pm.project_id', $request->project_id);
+                $usersQuery = $usersQuery->whereHas('projects', function ($query) use ($request) {
+                    $query->where('projects.id', $request->project_id);
+                });
             }
 
-            $users = $users->get();
-
+            $users = $usersQuery->with(['roles' => function ($query) {
+                    $query->select('name', 'label');
+                }])->get();
 
             $response = ['status' => 'Success', 'data' => $users];
             return response()->json($response);
