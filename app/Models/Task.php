@@ -24,7 +24,7 @@ class Task extends Model
         '1', '2', '3','4'
     ];
     public const status = [
-        'Pending', 'Hold', 'In-progress', 'Completed'
+        'Pending', 'Hold', 'In-progress', 'To-Do','Completed'
     ];
     /**
      * Get the project that owns the Task
