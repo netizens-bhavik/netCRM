@@ -432,6 +432,14 @@ class TaskServices
                 {
                     $tasksQuery->where('name', 'like', '%' . $request->search . '%')->orderBy($request->sortBy, $request->order);
                 }
+                if($request->completed_status == true)
+                {
+                    $tasksQuery->where('status','Completed');
+                }
+                else
+                {
+                    $tasksQuery->whereNot('status','Completed');
+                }
                 $tasks = $tasksQuery->latest()->paginate(10);
             } else {
                 throw new Exception('User Not Found.');
