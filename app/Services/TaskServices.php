@@ -300,6 +300,14 @@ class TaskServices
                 $query->latest();
             }
 
+            if($request->completed_status == true)
+            {
+                $query->whereNotNull('completed_date');
+            }
+            else
+            {
+                $query->whereNull('completed_date');
+            }
             $tasks = $query->paginate(10);
 
             return response()->json(['status' => 'success', 'data' => $tasks], 200);
