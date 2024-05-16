@@ -302,11 +302,11 @@ class TaskServices
 
             if($request->completed_status == true)
             {
-                $query->whereNotNull('completed_date');
+                $query->where('status','Completed');
             }
             else
             {
-                $query->whereNull('completed_date');
+                $query->whereNot('status','Completed');
             }
             $tasks = $query->paginate(10);
 
