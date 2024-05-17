@@ -254,25 +254,30 @@ class TaskServices
         try {
 
             $user = Auth::user();
-            $tasks = Task::with('members.user','observers.user' ,'project', 'createdBy','assignedTo')
-                ->whereHas('members', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                })
-                ->orWhereHas('observers',function ($query) use ($user){
-                    $query->where('observer_id',$user->id);
-                })
-                ->orWhereHas('assignedTo',function ($query) use ($user){
-                    $query->where('assigned_to',$user->id);
-                })
-                ->Orwhere('created_by', $user->id)
-                ->where(function($query)use ($request){
-                    if($request->completed_status == "true") {
-                        $query->where('status', 'Completed');
-                    } else if($request->completed_status == "false") {
-                        $query->where('status', '!=', 'Completed');
-                    }
-                })
-                ->get()->toArray();
+
+            $tasksQuery = Task::with(['members.user', 'observers.user', 'project', 'createdBy', 'assignedTo'])
+                            ->where(function ($query) use ($user) {
+                                $query->whereHas('members', function ($query) use ($user) {
+                                    $query->where('user_id', $user->id);
+                                })
+                                ->orWhereHas('observers', function ($query) use ($user) {
+                                    $query->where('observer_id', $user->id);
+                                })
+                                ->orWhereHas('assignedTo', function ($query) use ($user) {
+                                    $query->where('assigned_to', $user->id);
+                                })
+                                ->orWhere('created_by', $user->id);
+                            });
+
+            if ($request->filled('completed_status')) {
+                if ($request->completed_status == "true") {
+                    $tasksQuery->where('status', 'Completed');
+                } elseif ($request->completed_status == "false") {
+                    $tasksQuery->where('status', '!=', 'Completed');
+                }
+            }
+
+            $tasks = $tasksQuery->get()->toArray();
 
             return response()->json(['status' => 'success', 'data' => $tasks]);
         } catch (\Throwable $th) {
