@@ -28,28 +28,19 @@ function send_whatsapp_notification()
 function send_firebase_notification($deviceToken,$title,$body)
 {
     try {
-        $json_credentials = file_get_contents(storage_path(env('FIREBASE_CREDENTIALS')));
-
-        // Log::info("device token : $deviceToken");
-        // Log::info("title : $title");
-        // Log::info("body : $body");
+        $json_credentials = file_get_contents(storage_path('app/firebaseCredentials.json'));
 
         $firebase = (new Factory)->withServiceAccount($json_credentials);
         $messaging = $firebase->createMessaging();
 
         // Create a notification
         $notification = Notification::create($title, $body);
-        UserHasToken::updateOrCreate(['device_token' => $deviceToken], ['is_sent'=>1]);
+        UserHasToken::updateOrCreate(['device_token' => $deviceToken], ['is_sent' => 1]);
         // Create a CloudMessage
         $message = CloudMessage::withTarget('token', $deviceToken)
             ->withNotification($notification);
-            $messaging->send($message);
-
-        Log::info("message send to this device token => $deviceToken");
-        Log::info("============================================");
+        $messaging->send($message);
     } catch (\Throwable $th) {
         Log::info($th);
     }
-
-
 }
