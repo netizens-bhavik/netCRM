@@ -293,10 +293,20 @@ class ProjectServices
             return $th->getMessage();
         }
     }
-    public static function allProjects()
+    public static function allProjects($userId)
     {
         try {
-            $projects = Project::with('members', 'tasks')->get();
+            if ($userId == null) {
+                $projects = Project::get();
+            } else {
+                $projects = Project::orWhereHas('members', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                })
+                    ->orWhere('manage_by', $userId)
+                    ->orWhere('created_by', $userId)
+                    ->get()
+                    ->toArray();
+            }
             return response()->json(['status' => 'success', 'data' => $projects], 200);
         } catch (\Throwable $th) {
             $res = ['status' => 'error', 'message' => $th->getMessage()];
