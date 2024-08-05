@@ -75,7 +75,7 @@ class TaskServices
                     TaskHasObservers::create(['task_id' => $task->id, 'observer_id' => $value]);
                 }
             }
-            $manageByArray = [$task->created_by];
+            $manageByArray = [$task->assigned_to];
             $userIds = array_merge($task_observers,$task_members, $manageByArray);
             $userIds = array_unique($userIds);
             $userData = User::with('token')->has('token')->whereIn('id',$userIds)->get()->toArray();
