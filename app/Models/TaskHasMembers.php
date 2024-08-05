@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
-#[ObservedBy([TaskHasMembersObserver::class])]
+// #[ObservedBy([TaskHasMembersObserver::class])]
 class TaskHasMembers extends Model
 {
     use HasFactory,HasUuids;

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\TaskObserver;
 
-#[ObservedBy([TaskObserver::class])]
+// #[ObservedBy([TaskObserver::class])]
 class Task extends Model
 {
     use HasFactory, HasUuids;

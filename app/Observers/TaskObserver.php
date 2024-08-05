@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Task;
+use App\Models\TaskHasObservers;
 use Illuminate\Support\Facades\Log;
 use App\Models\Notification;
 use App\Models\TaskHasMembers;
@@ -14,10 +15,18 @@ class TaskObserver
      */
     public function created(Task $task): void
     {
+        // $notification = Notification::create([
+        //     'title' => 'Task Created',
+        //     'description' => $task->name,
+        //     'user_id' => $task->created_by,
+        //     'refrence_id' => $task->id,
+        //     'type' => 'task'
+        // ]);
+
         $notification = Notification::create([
             'title' => 'Task Created',
             'description' => $task->name,
-            'user_id' => $task->created_by,
+            'user_id' => $task->assigned_to,
             'refrence_id' => $task->id,
             'type' => 'task'
         ]);

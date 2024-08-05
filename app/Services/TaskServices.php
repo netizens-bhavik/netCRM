@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Notification;
 use Exception;
 use DataTables;
 use App\Models\Role;
@@ -27,6 +28,7 @@ class TaskServices
     }
     public static function createTask($request)
     {
+        DB::beginTransaction();
         try {
             if ($request->hasFile('voice_memo')) {
                 $destinationPath = 'voiceMemo';
@@ -79,19 +81,30 @@ class TaskServices
             $userIds = array_merge($task_observers,$task_members, $manageByArray);
             $userIds = array_unique($userIds);
             $userData = User::with('token')->has('token')->whereIn('id',$userIds)->get()->toArray();
-            // dump($userData);
             foreach ($userData as $userDataResponse) {
                 $device_token = $userDataResponse['token'];
                 foreach ($device_token as $value) {
                     if(!empty($value['device_token']))
                     {
+                        if(!empty($value['user_id']))
+                        {
+                            Notification::create([
+                                'title' => 'Task Created',
+                                'description' => $task->name,
+                                'user_id' => $value['user_id'],
+                                'refrence_id' => $task->id,
+                                'type' => 'task'
+                            ]);
+                        }
                         send_firebase_notification($value['device_token'],'Your Task is Created',$request->name);
                     }
                 }
             }
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Task Create Successfully.']);
         } catch (\Throwable $th) {
+            DB::rollBack();
             $res = ['status' => 'error', 'message' => $th->getMessage()];
             return response()->json($res);
         }
