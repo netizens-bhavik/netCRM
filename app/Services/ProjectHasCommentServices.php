@@ -124,4 +124,18 @@ class ProjectHasCommentServices
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
     }
+
+    public static function getProjectComment($projectId)
+    {
+        try {
+            $comments = ProjectHasComment::with('user')
+                ->where('project_id', $projectId)
+                ->orderBy('updated_at', 'asc') // Ordering by 'updated_at' in ascending order
+                ->get();
+
+            return response()->json(['status' => 'success', 'data' => $comments]);
+        } catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
 }

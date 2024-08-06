@@ -79,4 +79,9 @@ class ProjectHasCommentController extends Controller
     {
         //
     }
+
+    public function getProjectComment($projectId)
+    {
+        return $this->projectHasCommentServices->getProjectComment($projectId);
+    }
 }

@@ -60,7 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('project-comment/{commentId}/edit',[ProjectHasCommentController::class,'edit']);
     Route::post('project-comment/{commentId}/update',[ProjectHasCommentController::class,'update']);
     Route::delete('project-comment/{commentId}/delete',[ProjectHasCommentController::class,'destroy']);
-    
+    //without Pagination
+    Route::get('get-project-comment/{projectId}',[ProjectHasCommentController::class,'getProjectComment']);
     //task routes
     Route::get('all-task-list', [TaskController::class, 'allTaskList']);
     Route::post('task/create', [TaskController::class, 'store']);
