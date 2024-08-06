@@ -301,6 +301,19 @@ class TaskServices
         try {
             $query = Task::with('project', 'members.user', 'observers.user','createdBy','documents','assignedTo');
 
+            // Apply user filter if provided
+            if ($request->user_id) {
+                $query->whereHas('members', function ($query) use ($request) {
+                    $query->where('user_id', $request->user_id);
+                });
+                $query->orWhereHas('observers', function ($query) use ($request) {
+                    $query->where('observer_id', $request->user_id);
+                });
+                $query->orWhereHas('assignedTo', function ($query) use ($request) {
+                    $query->where('assigned_to', $request->user_id);
+                });
+                $query->orWhere('created_by', $request->user_id);
+            }
             // Apply search filter if provided
             if ($request->search) {
                 $query->where('name', 'like', '%' . $request->search . '%');
