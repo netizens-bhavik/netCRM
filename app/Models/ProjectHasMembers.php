@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
-#[ObservedBy([ProjectHasMembersObserver::class])]
 class ProjectHasMembers extends Model
 {
     use HasFactory,HasUuids;

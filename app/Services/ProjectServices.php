@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Notification;
 use Exception;
 use DataTables;
 use App\Models\Role;
@@ -26,6 +27,7 @@ class ProjectServices
     public static function createProject($request)
     {
         try {
+            DB::beginTransaction();
             $project = Project::create([
                 'client_id' => $request->has('client_id') ? $request->client_id : null,
                 'manage_by' => $request->has('manage_by') ? $request->manage_by : null,
@@ -40,6 +42,25 @@ class ProjectServices
             foreach ($project_members as $key => $member) {
                 ProjectHasMembers::create(['project_id' => $project->id, 'user_id' => $member]);
             }
+            $userIds = array_unique($project_members);
+            $userData = User::with('token')->has('token')->whereIn('id',$userIds)->get()->toArray();
+            foreach ($userData as $userDataResponse) {
+                Notification::create([
+                    'title' => 'Project Created',
+                    'description' => $project->name,
+                    'user_id' => $userDataResponse['id'],
+                    'refrence_id' => $project->id,
+                    'type' => 'Project'
+                ]);
+                $device_token = $userDataResponse['token'];
+                foreach ($device_token as $value) {
+                    if(!empty($value['device_token']))
+                    {
+                        send_firebase_notification($value['device_token'],'Your Project is Created',$request->name);
+                    }
+                }
+            }
+            DB::commit();
             if ($request->expectsJson()) {
                 //For API
                 return response()->json(['status' => 'success', 'message' => 'Project Create Successfully.']);
@@ -49,6 +70,7 @@ class ProjectServices
                 return redirect('project');
             }
         } catch (\Throwable $th) {
+            DB::rollBack();
             $res = ['status' => 'error', 'message' => $th->getMessage().$th->getLine()];
             return response()->json($res);
         }
@@ -140,6 +162,9 @@ class ProjectServices
 
 
             if (!empty($project)) {
+                Notification::where('refrence_id',$projectId)
+                ->where('type', 'project')
+                ->delete();
                 $projectMembers = Project::find($projectId)->delete();
                 $project->delete();
                 // DB::commit();

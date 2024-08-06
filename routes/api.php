@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectHasCommentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -53,6 +54,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('project/{projectId}/delete', [ProjectController::class, 'destroy']);
     Route::get('all-project/{userId?}',[ProjectController::class,'allProjects']);
 
+    //Project Comments Routes
+    Route::get('project-comment/{projectId}',[ProjectHasCommentController::class,'index']);
+    Route::post('project-comment/{projectId}',[ProjectHasCommentController::class,'store']);
+    Route::get('project-comment/{commentId}/edit',[ProjectHasCommentController::class,'edit']);
+    Route::post('project-comment/{commentId}/update',[ProjectHasCommentController::class,'update']);
+    Route::delete('project-comment/{commentId}/delete',[ProjectHasCommentController::class,'destroy']);
+    
     //task routes
     Route::get('all-task-list', [TaskController::class, 'allTaskList']);
     Route::post('task/create', [TaskController::class, 'store']);

@@ -31,7 +31,8 @@ class TaskHasCommentServices
     public static function store($request, $taskId)
     {
         try {
-            TaskHasComment::create(['user_id' => Auth::id(), 'task_id' => $taskId, 'comment' => $request->comment]);
+            $authUser = Auth::user();
+            TaskHasComment::create(['user_id' =>$authUser->id, 'task_id' => $taskId, 'comment' => $request->comment]);
             $userIds = Task::with(['members.user:id', 'observers.user:id'])
             ->where('id', $taskId)
             ->get()
@@ -42,8 +43,8 @@ class TaskHasCommentServices
                     [$task->assigned_to, $task->created_by]
                 );
             })
-            ->filter(function ($userId) {
-                return $userId !== Auth::id();
+            ->filter(function ($userId) use ($authUser) {
+                return $userId !== $authUser->id;
             })
             ->unique()
             ->values()
@@ -55,7 +56,7 @@ class TaskHasCommentServices
                 foreach ($userData as $userDataResponse) {
                     Notification::create([
                         'title' => 'Task Comment',
-                        'description' => $userDataResponse['name'].' has commented on the " '.$taskData->name.' "',
+                        'description' => $authUser->name .' has commented on the " '.$taskData->name.' "',
                         'user_id' => $userDataResponse['id'],
                         'refrence_id' => $taskId,
                         'type' => 'Task'
@@ -64,7 +65,7 @@ class TaskHasCommentServices
                     foreach ($device_token as $value) {
                         if(!empty($value['device_token']))
                         {
-                            send_firebase_notification($value['device_token'],'Comment' ,$userDataResponse['name'].' has commented on the " '.$taskData->name.' "');
+                            send_firebase_notification($value['device_token'],'Comment' ,$authUser->name.' has commented on the " '.$taskData->name.' "');
                         }
 
                     }

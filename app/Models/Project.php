@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
-#[ObservedBy([ProjectObserver::class])]
 class Project extends Model
 {
     use HasFactory,HasUuids;
@@ -80,10 +79,17 @@ class Project extends Model
     }
     public function delete()
     {
+        // Delete associated task notifications
+        $taskIds = $this->tasks()->pluck('id')->toArray();
+        if ($taskIds) {
+            Notification::whereIn('refrence_id', $taskIds)
+                        ->where('type', 'task')
+                        ->delete();
+        }
+        
         // Delete associated tasks
         $this->tasks()->delete();
-
-        // Then delete the project itself
+        // Delete the project itself
         return parent::delete();
     }
 
