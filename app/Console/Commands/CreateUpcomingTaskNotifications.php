@@ -59,21 +59,17 @@ class CreateUpcomingTaskNotifications extends Command
                     if(!empty($userData))
                     {
                         foreach ($userData as $userDataResponse) {
+                            Notification::create([
+                                'title' => 'Upcoming Task',
+                                'description' => 'Stay tuned for the upcoming " '.$taskResponse['name'].' "',
+                                'user_id' => $userDataResponse['id'],
+                                'refrence_id' => $taskId,
+                                'type' => 'task'
+                            ]);
                             $device_token = $userDataResponse['token'];
                             foreach ($device_token as $value) {
                                 if(!empty($value['device_token']))
                                 {
-                                    if(!empty($value['user_id']))
-                                    {
-                                        Notification::create([
-                                            'title' => 'Upcoming Task',
-                                            'description' => 'Stay tuned for the upcoming " '.$taskResponse['name'].' "',
-                                            'user_id' => $value['user_id'],
-                                            'refrence_id' => $taskId,
-                                            'type' => 'task'
-                                        ]);
-                                    }
-                                    // Log::info("Stay tuned for the upcoming {$taskResponse['name']}.");
                                     send_firebase_notification($value['device_token'],'Upcoming Task' ,'Stay tuned for the upcoming " '.$taskResponse['name'].' "');
                                 }
 

@@ -82,20 +82,17 @@ class TaskServices
             $userIds = array_unique($userIds);
             $userData = User::with('token')->has('token')->whereIn('id',$userIds)->get()->toArray();
             foreach ($userData as $userDataResponse) {
+                Notification::create([
+                    'title' => 'Task Created',
+                    'description' => $task->name,
+                    'user_id' => $userDataResponse['id'],
+                    'refrence_id' => $task->id,
+                    'type' => 'task'
+                ]);
                 $device_token = $userDataResponse['token'];
                 foreach ($device_token as $value) {
                     if(!empty($value['device_token']))
                     {
-                        if(!empty($value['user_id']))
-                        {
-                            Notification::create([
-                                'title' => 'Task Created',
-                                'description' => $task->name,
-                                'user_id' => $value['user_id'],
-                                'refrence_id' => $task->id,
-                                'type' => 'task'
-                            ]);
-                        }
                         send_firebase_notification($value['device_token'],'Your Task is Created',$request->name);
                     }
                 }
@@ -232,6 +229,7 @@ class TaskServices
             if (!empty($task)) {
                 $projectMembers = TaskHasMembers::where('task_id', $taskId)->delete();
                 $taskobservers = TaskHasObservers::where('task_id', $taskId)->delete();
+                $notificationTasks = Notification::where('refrence_id', $taskId)->delete();
                 $task->delete();
                 return response()->json(['status' => 'success', 'message' => 'Task Deleted Successfully.']);
             } else {

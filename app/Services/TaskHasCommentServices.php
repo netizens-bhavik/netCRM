@@ -53,20 +53,17 @@ class TaskHasCommentServices
             if(!empty($userData))
             {
                 foreach ($userData as $userDataResponse) {
+                    Notification::create([
+                        'title' => 'Task Comment',
+                        'description' => $userDataResponse['name'].' has commented on the " '.$taskData->name.' "',
+                        'user_id' => $userDataResponse['id'],
+                        'refrence_id' => $taskId,
+                        'type' => 'Task'
+                    ]);
                     $device_token = $userDataResponse['token'];
                     foreach ($device_token as $value) {
                         if(!empty($value['device_token']))
                         {
-                            if(!empty($value['user_id']))
-                            {
-                                Notification::create([
-                                    'title' => 'Task Comment',
-                                    'description' => $userDataResponse['name'].' has commented on the " '.$taskData->name.' "',
-                                    'user_id' => $value['user_id'],
-                                    'refrence_id' => $taskData->id,
-                                    'type' => 'Task'
-                                ]);
-                            }
                             send_firebase_notification($value['device_token'],'Comment' ,$userDataResponse['name'].' has commented on the " '.$taskData->name.' "');
                         }
 

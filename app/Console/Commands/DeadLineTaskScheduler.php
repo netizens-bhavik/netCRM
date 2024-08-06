@@ -60,21 +60,17 @@ class DeadLineTaskScheduler extends Command
                     if(!empty($userData))
                     {
                         foreach ($userData as $userDataResponse) {
+                            Notification::create([
+                                'title' => 'Task Deadline',
+                                'description' => 'Reminder: Deadline for ' .$taskResponse['name'].' is ' .$taskDate.'. Please ensure completion by then.',
+                                'user_id' => $userDataResponse['id'],
+                                'refrence_id' => $taskId,
+                                'type' => 'task'
+                            ]);
                             $device_token = $userDataResponse['token'];
                             foreach ($device_token as $value) {
                                 if(!empty($value['device_token']))
                                 {
-                                    if(!empty($value['user_id']))
-                                    {
-                                        Notification::create([
-                                            'title' => 'Task Deadline',
-                                            'description' => 'Reminder: Deadline for ' .$taskResponse['name'].' is ' .$taskDate.'. Please ensure completion by then.',
-                                            'user_id' => $value['user_id'],
-                                            'refrence_id' => $taskId,
-                                            'type' => 'task'
-                                        ]);
-                                    }
-                                    // Log::info("Reminder: Deadline for {$taskResponse['name']} is {$taskDate}. Please ensure completion by then.");
                                     send_firebase_notification($value['device_token'],'Task Deadline' ,'Reminder: Deadline for " ' .$taskResponse['name'].' " is ' .$taskDate.'. Please ensure completion by then.');
                                 }
 
