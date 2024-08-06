@@ -49,7 +49,9 @@ class ProjectHasCommentServices
                         ->unique()
                         ->values()
                         ->toArray();
-            $userData = User::with('token')->has('token')->whereIn('id',$projectMembers)->get()->toArray();
+            $uniqueMembers = array_unique(array_merge($projectMembers, [$projectData->manage_by]));
+            // Resulting list of unique member IDs
+            $userData = User::with('token')->has('token')->whereIn('id',$uniqueMembers)->get()->toArray();
             if(!empty($userData))
             {
                 foreach ($userData as $userDataResponse) {
@@ -64,7 +66,7 @@ class ProjectHasCommentServices
                     foreach ($device_token as $value) {
                         if(!empty($value['device_token']))
                         {
-                            send_firebase_notification($value['device_token'],'Comment' ,$authUser->name.' has commented on the " '.$projectData->name.' "');
+                            // send_firebase_notification($value['device_token'],'Comment' ,$authUser->name.' has commented on the " '.$projectData->name.' "');
                         }
 
                     }
