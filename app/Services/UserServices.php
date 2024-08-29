@@ -141,12 +141,8 @@ class UserServices
                 }else{
                     $myadhar = $user->adhar_image;
                 }
-                if ($request->currunt_password) {
-                    if (Hash::check($request->currunt_password, $user->password)) {
-                        $password = Hash::make($request->password);
-                    } else {
-                        throw new Exception('Currunt Password is incorrect');
-                    }
+                if ($request->password) {
+                    $password = Hash::make($request->password);
                 } else {
                     $password = $user->password;
                 }
