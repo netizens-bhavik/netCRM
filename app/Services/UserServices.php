@@ -290,9 +290,11 @@ class UserServices
     public static function forgotPassword($request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|email',
-            ]);
+        $user = User::findOrFail($request->userId);
+        $user->update(['password'=>Hash::make('12345678')]);
+        if($user){
+            return response()->json(['status'=>true,'message'=>'password Change Successfully']);
+        }
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }

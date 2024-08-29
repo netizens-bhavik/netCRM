@@ -24,6 +24,7 @@ use Twilio\Rest\Client;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
+Route::post('forgot-password',[UserController::class,'forgotPassword']);
 Route::middleware('auth:sanctum')->group(function () {
 
     //users routes
@@ -36,7 +37,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('allUsers',[UserController::class,'allUsers']);
     Route::get('findUser/{userId}',[UserController::class,'findUser']);
     Route::post('reset-password/{userId}',[UserController::class,'resetPassword']);
-    Route::post('forgot-password',[UserController::class,'forgotPassword']);
 
     //client routes
     Route::get('all-client-list', [ClientController::class, 'allClientList']);
