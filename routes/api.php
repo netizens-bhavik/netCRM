@@ -25,7 +25,7 @@ use Twilio\Rest\Client;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
-// Route::post('forgot-password',[UserController::class,'forgotPassword']);
+Route::post('forgot-password',[UserController::class,'forgotPassword']);
 // Route::post('forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 // Route::get('reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 // Route::post('reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
