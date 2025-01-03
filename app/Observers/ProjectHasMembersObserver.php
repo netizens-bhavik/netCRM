@@ -21,7 +21,7 @@ class ProjectHasMembersObserver
             'refrence_id' => $projectHasMembers->project_id,
             'type' => 'project'
         ]);
-        Log::info('project notification Delete');
+        // Log::info('project notification Delete');
 
     }
 
@@ -39,7 +39,7 @@ class ProjectHasMembersObserver
     public function deleted(ProjectHasMembers $projectHasMembers): void
     {
         Notification::where('type','project')->where('refrence_id',$projectHasMembers->project_id)->delete();
-        Log::info('project notification Delete');
+        // Log::info('project notification Delete');
 
     }
 

@@ -41,6 +41,6 @@ function send_firebase_notification($deviceToken,$title,$body)
             ->withNotification($notification);
         $messaging->send($message);
     } catch (\Throwable $th) {
-        Log::info($th);
+        // Log::info($th);
     }
 }

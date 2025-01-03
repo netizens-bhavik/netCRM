@@ -46,7 +46,7 @@ class TaskObserver
     public function deleted(Task $task): void
     {
         Notification::where('type','task')->where('refrence_id',$task->id)->delete();
-        Log::info('task notification Delete');
+        // Log::info('task notification Delete');
     }
 
     /**
