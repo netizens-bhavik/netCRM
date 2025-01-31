@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "serve:aniket" : "php artisan serve --host=192.168.1.46 --port=8000"
     },
     "devDependencies": {
         "axios": "^1.6.4",
