@@ -26,7 +26,6 @@ use Twilio\Rest\Client;
 
 Route::middleware(App\Http\Middleware\Cors::class)->group(function () {
 
-    Route::post('/auth/register', [AuthController::class, 'createUser']);
     Route::post('/auth/login', [AuthController::class, 'loginUser']);
     Route::post('forgot-password', [UserController::class, 'forgotPassword']);
     // Route::post('forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -35,6 +34,7 @@ Route::middleware(App\Http\Middleware\Cors::class)->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
 
+        Route::post('/auth/register', [AuthController::class, 'createUser']);
         //users routes
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('user/edit/{userId}', [UserController::class, 'edit']);
