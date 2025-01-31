@@ -16,6 +16,10 @@ Route::get('/optimize', function () {
     Artisan::call('optimize');
     echo "Optimized";
 });
+Route::get('/config', function () {
+    Artisan::call('config:clear');
+    echo "Config Clear";
+});
 Route::get('client',[ClientController::class,'index'])->name('client.index')->middleware('auth.basic');
 Route::get('client-list',[ClientController::class,'clientList']);
 Route::get('create/client',[ClientController::class,'create'])->name('client.create');
