@@ -23,7 +23,7 @@ class RegisteruserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'avtar' => 'nullable|image',
+            'avtar' => 'nullable|mimes:png,jpg,jpeg',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'phone_no' => 'nullable',
@@ -32,7 +32,7 @@ class RegisteruserRequest extends FormRequest
             'date_of_join' => 'nullable',
             'address' => 'nullable',
             'role' => 'required',
-            'adhar_image' => 'nullable|image'
+            'adhar_image' => 'nullable|mimes:png,jpg,jpeg'
         ];
     }
 }

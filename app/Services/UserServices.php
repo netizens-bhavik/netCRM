@@ -12,7 +12,7 @@ use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Str;
 
 class UserServices
 {
@@ -293,6 +293,53 @@ class UserServices
         }
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
+    }
+
+    public static function registerUser($request)
+    {
+        try {
+            DB::beginTransaction();
+            if ($request->avtar) {
+                $destinationPath = 'avatars';
+                $myimage = time().$request->avtar->getClientOriginalName();
+                $request->avtar->move(public_path($destinationPath), $myimage);
+            }else{
+                $myimage= null;
+            }
+            if($request->hasFile('adhar_image')){
+                $destinationPath = 'adharImages';
+                $myadhar = time().$request->adhar_image->getClientOriginalName();
+                $request->adhar_image->move(public_path($destinationPath), $myadhar);
+            }else{
+                $myadhar = null;
+            }
+            $user = User::create([
+                'id' => Str::uuid(),
+                'name' => $request->name,
+                'avtar' => $myimage,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone_no' => $request->has('phone_no') ? $request->phone_no : null,
+                'date_of_birth' => $request->has('date_of_birth') ? $request->date_of_birth : null,
+                'gender' => $request->has('gender') ? $request->gender : null,
+                'date_of_join' => $request->has('date_of_join') ? $request->date_of_join : null,
+                'address' => $request->has('address') ? $request->address : null,
+                'adhar_image' => $myadhar
+            ]);
+            $user->assignRole($request->role);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'User Created Successfully',
+                'token' => $user->createToken("API TOKEN")->plainTextToken
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 }

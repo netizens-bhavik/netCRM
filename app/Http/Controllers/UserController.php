@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\passwordResetRequest;
+use App\Http\Requests\RegisteruserRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
@@ -90,5 +91,11 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return ApiResponses::errorResponse([], $th->getMessage(), 500);
         }
+    }
+
+    public function createUser(RegisteruserRequest $request)
+    {
+        $response = UserServices::registerUser($request);
+        return $response;
     }
 }
