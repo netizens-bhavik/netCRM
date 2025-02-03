@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\passwordResetRequest;
 use App\Http\Requests\RegisteruserRequest;
+use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserServices;
 use Illuminate\Http\Request;
@@ -93,8 +94,15 @@ class UserController extends Controller
         }
     }
 
-    public function userCreate(Request $request)
+    public function userCreate(UserCreateRequest $request)
     {
+        try
+        {
+            $response = UserServices::userCreate($request);
+            return $response;
+        }catch (\Throwable $th) {
+            return ApiResponses::errorResponse([], $th->getMessage(), 500);
+        }
         $response = [
             'status' =>true,
         ];

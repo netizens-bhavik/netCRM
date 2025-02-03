@@ -296,7 +296,7 @@ class UserServices
         }
     }
 
-    public static function registerUser($request)
+    public static function userCreate($request)
     {
         try {
             DB::beginTransaction();
