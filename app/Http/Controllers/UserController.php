@@ -93,9 +93,11 @@ class UserController extends Controller
         }
     }
 
-    public function createUser(RegisteruserRequest $request)
+    public function userCreate(Request $request)
     {
-        $response = UserServices::registerUser($request);
-        return $response;
+        $response = [
+            'status' =>true,
+        ];
+        return response()->json($response);
     }
 }

@@ -30,6 +30,7 @@ Route::middleware(App\Http\Middleware\Cors::class)->group(function () {
     Route::post('forgot-password', [UserController::class, 'forgotPassword']);
     Route::post('/auth/register', [AuthController::class, 'createUser']);
     Route::post('/user-register', [AuthController::class, 'createUser']);
+    Route::post('/user/create', [UserController::class, 'userCreate']);
     // Route::post('forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
     // Route::get('reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
     // Route::post('reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
